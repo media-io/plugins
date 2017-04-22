@@ -1,0 +1,76 @@
+
+Import('env')
+
+FileSystemPlugin = env.SharedLibrary(
+	'filesystem',
+	Glob( 'filesystem/*.cpp' ),
+	LIBS = [
+		'mediaio-api',
+	],
+	SHLIBPREFIX = "",
+	SHLIBSUFFIX = ".miop",
+	SHLIBVERSION = "",
+)
+
+SequencePlugin = env.SharedLibrary(
+	'sequence',
+	Glob( 'sequence/*.cpp' ),
+	LIBS = [
+		'mediaio-api',
+	],
+	SHLIBPREFIX = "",
+	SHLIBSUFFIX = ".miop",
+	SHLIBVERSION = "",
+)
+
+StatisticsPlugin = env.SharedLibrary(
+	'statistics',
+	Glob( 'statistics/*.cpp' ),
+	LIBS = [
+		'mediaio-api',
+	],
+	SHLIBPREFIX = "",
+	SHLIBSUFFIX = ".miop",
+	SHLIBVERSION = "",
+)
+
+ComparatorPlugin = env.SharedLibrary(
+	'comparator',
+	Glob( 'comparator/*.cpp' ),
+	LIBS = [
+		'mediaio-api',
+	],
+	SHLIBPREFIX = "",
+	SHLIBSUFFIX = ".miop",
+	SHLIBVERSION = "",
+)
+
+PsnrPlugin = env.SharedLibrary(
+	'psnr',
+	Glob( 'psnr/*.cpp' ),
+	LIBS = [
+		'mediaio-api',
+	],
+	SHLIBPREFIX = "",
+	SHLIBSUFFIX = ".miop",
+	SHLIBVERSION = "",
+)
+
+ConstantPlugin = env.SharedLibrary(
+	'constant',
+	Glob( 'constant/*.cpp' ),
+	LIBS=[
+		'mediaio-api',
+	],
+	SHLIBPREFIX = "",
+	SHLIBSUFFIX = ".miop",
+	SHLIBVERSION = "",
+)
+
+env.Alias( 'install', env.InstallVersionedLib( 'plugin/filesystem.miop.bundle/Contents/MacOS',    FileSystemPlugin    ) )
+env.Alias( 'install', env.InstallVersionedLib( 'plugin/sequence.miop.bundle/Contents/MacOS',      SequencePlugin      ) )
+env.Alias( 'install', env.InstallVersionedLib( 'plugin/statistics.miop.bundle/Contents/MacOS',    StatisticsPlugin    ) )
+env.Alias( 'install', env.InstallVersionedLib( 'plugin/comparator.miop.bundle/Contents/MacOS',    ComparatorPlugin    ) )
+env.Alias( 'install', env.InstallVersionedLib( 'plugin/psnr.miop.bundle/Contents/MacOS',          PsnrPlugin          ) )
+env.Alias( 'install', env.InstallVersionedLib( 'plugin/constant.miop.bundle/Contents/MacOS',      ConstantPlugin      ) )
+env.Alias( 'install', env.InstallVersionedLib( 'plugin/chart.miop.bundle/Contents/MacOS',         ChartPlugin         ) )
