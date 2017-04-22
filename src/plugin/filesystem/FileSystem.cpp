@@ -3,6 +3,7 @@
 #include "Reader.hpp"
 #include "Writer.hpp"
 
+#include <cstring>
 #include <iostream>
 #include <vector>
 

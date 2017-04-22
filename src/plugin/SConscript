@@ -73,4 +73,3 @@ env.Alias( 'install', env.InstallVersionedLib( 'plugin/statistics.miop.bundle/Co
 env.Alias( 'install', env.InstallVersionedLib( 'plugin/comparator.miop.bundle/Contents/MacOS',    ComparatorPlugin    ) )
 env.Alias( 'install', env.InstallVersionedLib( 'plugin/psnr.miop.bundle/Contents/MacOS',          PsnrPlugin          ) )
 env.Alias( 'install', env.InstallVersionedLib( 'plugin/constant.miop.bundle/Contents/MacOS',      ConstantPlugin      ) )
-env.Alias( 'install', env.InstallVersionedLib( 'plugin/chart.miop.bundle/Contents/MacOS',         ChartPlugin         ) )

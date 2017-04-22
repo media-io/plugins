@@ -1,5 +1,6 @@
 #include "Generator.hpp"
 
+#include <cstring>
 #include <iostream>
 
 Generator::Generator()
@@ -45,7 +46,7 @@ MediaioStatus Generator::generate(Frame* frame)
 	init_frame(frame);
 	create_components(frame, _components);
 
-	for (int c = 0; c < _components; ++c)
+	for (size_t c = 0; c < _components; ++c)
 	{
 		Component& component = frame->components[c];
 		init_component(&component);
@@ -61,9 +62,9 @@ MediaioStatus Generator::generate(Frame* frame)
 
 		// memset((uint8_t*)component.data, 0xFF, component.size);
 
-		for (int y = 0; y < _height; ++y)
+		for (size_t y = 0; y < _height; ++y)
 		{
-			for (int x = 0; x < _width; ++x)
+			for (size_t x = 0; x < _width; ++x)
 			{
 				// *ptr = 0xFFFF;
 				*ptr = c * 0;

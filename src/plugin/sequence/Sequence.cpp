@@ -3,6 +3,8 @@
 #include "Unwrapper.hpp"
 #include "Wrapper.hpp"
 
+#include <cstring>
+
 MediaioStatus unwrapperCreateInstance(void** handle)
 {
 	Unwrapper* instance = new Unwrapper();

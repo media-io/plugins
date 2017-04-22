@@ -26,7 +26,7 @@ Metadata* Analyser::analyse( const Frame* decodedFrame, const int numberOfFrames
 	init_metadata(&mEnd);
 	mEnd.type = eMetadataTypeEnd;
 
-	for( size_t imageIndex = 1; imageIndex < numberOfFrames; ++imageIndex )
+	for( int imageIndex = 1; imageIndex < numberOfFrames; ++imageIndex )
 	{
 		computeSumOfDiff(
 			decodedFrame[0],
@@ -40,7 +40,7 @@ Metadata* Analyser::analyse( const Frame* decodedFrame, const int numberOfFrames
 
 	_compareResult.resize( numberOfFrames - 1 );
 
-	for( size_t imageIndex = 0; imageIndex < numberOfFrames - 1; ++imageIndex )
+	for( int imageIndex = 0; imageIndex < numberOfFrames - 1; ++imageIndex )
 	{
 		_compareResult.at(imageIndex).resize( _sums[imageIndex].size() * 4 );
 		for( size_t resultIndex = 0; resultIndex < _sums[imageIndex].size(); ++resultIndex )

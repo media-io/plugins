@@ -2,6 +2,7 @@
 #include <mediaio/api/instance/instance.h>
 #include "Analyser.hpp"
 
+#include <cstring>
 #include <vector>
 
 MediaioStatus createInstance(void** handle)
