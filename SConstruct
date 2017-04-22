@@ -17,13 +17,12 @@ AddOption(
 )
 
 mediaio_root = GetOption('mediaio')
-print(mediaio_root)
 mediaio_include = ''
 mediaio_lib = ''
 if mediaio_root:
     mediaio_include = os.path.join( mediaio_root, 'include' )
     mediaio_lib = os.path.join( mediaio_root, 'lib' )
-print(mediaio_include)
+
 env = Environment()
 
 env.Append(
