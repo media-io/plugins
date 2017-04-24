@@ -1,75 +1,105 @@
 
 Import('env')
+Import('conf')
+
+# platform = 'win32'
+# platform = 'win64'
+# platform = 'MacOS'
+# platform = 'Linux-x86'
+platform = 'Linux-x86-64'
 
 FileSystemPlugin = env.SharedLibrary(
-	'filesystem',
-	Glob( 'filesystem/*.cpp' ),
-	LIBS = [
-		'mediaio-api',
-	],
-	SHLIBPREFIX = "",
-	SHLIBSUFFIX = ".miop",
-	SHLIBVERSION = "",
+    'filesystem',
+    Glob( 'filesystem/*.cpp' ),
+    LIBS = [
+        'mediaio-api',
+    ],
+    SHLIBPREFIX = "",
+    SHLIBSUFFIX = ".miop",
+    SHLIBVERSION = "",
 )
 
 SequencePlugin = env.SharedLibrary(
-	'sequence',
-	Glob( 'sequence/*.cpp' ),
-	LIBS = [
-		'mediaio-api',
-	],
-	SHLIBPREFIX = "",
-	SHLIBSUFFIX = ".miop",
-	SHLIBVERSION = "",
+    'sequence',
+    Glob( 'sequence/*.cpp' ),
+    LIBS = [
+        'mediaio-api',
+    ],
+    SHLIBPREFIX = "",
+    SHLIBSUFFIX = ".miop",
+    SHLIBVERSION = "",
 )
 
 StatisticsPlugin = env.SharedLibrary(
-	'statistics',
-	Glob( 'statistics/*.cpp' ),
-	LIBS = [
-		'mediaio-api',
-	],
-	SHLIBPREFIX = "",
-	SHLIBSUFFIX = ".miop",
-	SHLIBVERSION = "",
+    'statistics',
+    Glob( 'statistics/*.cpp' ),
+    LIBS = [
+        'mediaio-api',
+    ],
+    SHLIBPREFIX = "",
+    SHLIBSUFFIX = ".miop",
+    SHLIBVERSION = "",
 )
 
 ComparatorPlugin = env.SharedLibrary(
-	'comparator',
-	Glob( 'comparator/*.cpp' ),
-	LIBS = [
-		'mediaio-api',
-	],
-	SHLIBPREFIX = "",
-	SHLIBSUFFIX = ".miop",
-	SHLIBVERSION = "",
+    'comparator',
+    Glob( 'comparator/*.cpp' ),
+    LIBS = [
+        'mediaio-api',
+    ],
+    SHLIBPREFIX = "",
+    SHLIBSUFFIX = ".miop",
+    SHLIBVERSION = "",
 )
 
 PsnrPlugin = env.SharedLibrary(
-	'psnr',
-	Glob( 'psnr/*.cpp' ),
-	LIBS = [
-		'mediaio-api',
-	],
-	SHLIBPREFIX = "",
-	SHLIBSUFFIX = ".miop",
-	SHLIBVERSION = "",
+    'psnr',
+    Glob( 'psnr/*.cpp' ),
+    LIBS = [
+        'mediaio-api',
+    ],
+    SHLIBPREFIX = "",
+    SHLIBSUFFIX = ".miop",
+    SHLIBVERSION = "",
 )
 
 ConstantPlugin = env.SharedLibrary(
-	'constant',
-	Glob( 'constant/*.cpp' ),
-	LIBS=[
-		'mediaio-api',
-	],
-	SHLIBPREFIX = "",
-	SHLIBSUFFIX = ".miop",
-	SHLIBVERSION = "",
+    'constant',
+    Glob( 'constant/*.cpp' ),
+    LIBS=[
+        'mediaio-api',
+    ],
+    SHLIBPREFIX = "",
+    SHLIBSUFFIX = ".miop",
+    SHLIBVERSION = "",
 )
 
-env.Alias( 'install', env.InstallVersionedLib( 'plugin/filesystem.miop.bundle/Contents/MacOS',    FileSystemPlugin    ) )
-env.Alias( 'install', env.InstallVersionedLib( 'plugin/sequence.miop.bundle/Contents/MacOS',      SequencePlugin      ) )
-env.Alias( 'install', env.InstallVersionedLib( 'plugin/statistics.miop.bundle/Contents/MacOS',    StatisticsPlugin    ) )
-env.Alias( 'install', env.InstallVersionedLib( 'plugin/comparator.miop.bundle/Contents/MacOS',    ComparatorPlugin    ) )
-env.Alias( 'install', env.InstallVersionedLib( 'plugin/psnr.miop.bundle/Contents/MacOS',          PsnrPlugin          ) )
-env.Alias( 'install', env.InstallVersionedLib( 'plugin/constant.miop.bundle/Contents/MacOS',      ConstantPlugin      ) )
+if conf.CheckLibWithHeader('turing', 'turing.h', 'c'):
+    TuringcodecPlugin = env.SharedLibrary(
+        'turingcodec',
+        Glob( 'turingcodec/*.cpp' ),
+        LIBS=[
+            'mediaio-api',
+            'turing',
+            'havoc',
+            'pthread',
+            'boost_system',
+            'boost_chrono',
+            'boost_filesystem',
+            'boost_program_options',
+            'boost_timer',
+        ],
+        SHLIBPREFIX = "",
+        SHLIBSUFFIX = ".miop",
+        SHLIBVERSION = "",
+    )
+    env.Alias('install', env.InstallVersionedLib('plugin/turingcodec.miop.bundle/Contents/' + platform, TuringcodecPlugin))
+else:
+    print 'Did not find turingcodec library!'
+
+env.Alias('install', env.InstallVersionedLib('plugin/filesystem.miop.bundle/Contents/' + platform,    FileSystemPlugin    ))
+env.Alias('install', env.InstallVersionedLib('plugin/sequence.miop.bundle/Contents/' + platform,      SequencePlugin      ))
+env.Alias('install', env.InstallVersionedLib('plugin/statistics.miop.bundle/Contents/' + platform,    StatisticsPlugin    ))
+env.Alias('install', env.InstallVersionedLib('plugin/comparator.miop.bundle/Contents/' + platform,    ComparatorPlugin    ))
+env.Alias('install', env.InstallVersionedLib('plugin/psnr.miop.bundle/Contents/' + platform,          PsnrPlugin          ))
+env.Alias('install', env.InstallVersionedLib('plugin/constant.miop.bundle/Contents/' + platform,      ConstantPlugin      ))

@@ -66,8 +66,8 @@ MediaioStatus Generator::generate(Frame* frame)
 		{
 			for (size_t x = 0; x < _width; ++x)
 			{
-				// *ptr = 0xFFFF;
-				*ptr = c * 0;
+				*ptr = 0xFFFF;
+				// *ptr = c * 0;
 				++ptr;
 			}
 		}

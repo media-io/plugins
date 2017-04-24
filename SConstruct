@@ -16,6 +16,16 @@ AddOption(
     help='Path to root of mediaio library.'
 )
 
+AddOption(
+    '--turingcodec',
+    dest='turingcodec',
+    type='string',
+    nargs=1,
+    action='store',
+    metavar='DIR',
+    help='Path to root of turingcodec library.'
+)
+
 mediaio_root = GetOption('mediaio')
 mediaio_include = ''
 mediaio_lib = ''
@@ -23,12 +33,20 @@ if mediaio_root:
     mediaio_include = os.path.join( mediaio_root, 'include' )
     mediaio_lib = os.path.join( mediaio_root, 'lib' )
 
+turingcodec_root = GetOption('turingcodec')
+turingcodec_include = ''
+turingcodec_lib = ''
+if turingcodec_root:
+    turingcodec_include = os.path.join( turingcodec_root, 'include' )
+    turingcodec_lib = os.path.join( turingcodec_root, 'lib' )
+
 env = Environment()
 
 env.Append(
     CPPPATH = [
         '#src',
         mediaio_include,
+        turingcodec_include,
     ],
     DPATH = [
         '#src',
@@ -41,6 +59,7 @@ env.Append(
     LIBPATH = [
         '#src',
         mediaio_lib,
+        turingcodec_lib,
     ],
 )
 
@@ -51,6 +70,7 @@ if not conf.CheckLibWithHeader('mediaio-api', 'mediaio/api/instance/instance.h',
     Exit(1)
 
 Export('env')
+Export('conf')
 
 VariantDir('build/' + buildMode + '/src/plugin/plugin', 'src', duplicate = 0)
 SConscript('src/plugin/SConscript', variant_dir = 'build/' + buildMode + '/src/plugin')
