@@ -76,7 +76,7 @@ MediaioPlugin* mediaio_get_plugin(int nth)
 		return &PsnrAnalyser;
 	return 0;
 }
- 
+
 int mediaio_get_number_of_plugins(void)
 {
 	return 1;

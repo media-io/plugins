@@ -22,7 +22,7 @@ Metadata* Analyser::analyse(const Frame* decodedFrame, const int numberOfFrames)
 	_max.resize(numberOfFrames);
 	_mean.resize(numberOfFrames);
 
-	for(size_t index = 0; index < numberOfFrames; ++ index)
+	for(int index = 0; index < numberOfFrames; ++ index)
 	{
 		analyseFrame(decodedFrame[ index ], _min.at(index), _max.at(index), _mean.at(index));
 	}
@@ -33,7 +33,7 @@ Metadata* Analyser::analyse(const Frame* decodedFrame, const int numberOfFrames)
 
 
 	_analysis.resize( numberOfFrames );
-	for( size_t imageIndex = 0; imageIndex < numberOfFrames; ++imageIndex )
+	for(int imageIndex = 0; imageIndex < numberOfFrames; ++imageIndex )
 	{
 		_analysis.at(imageIndex).resize( _min[imageIndex].size() * 3 + 1 );
 		for( size_t resultIndex = 0; resultIndex < _min[imageIndex].size(); ++resultIndex )
