@@ -6,177 +6,52 @@ buildMode = ARGUMENTS.get('mode', 'release')
 if not (buildMode in ['debug', 'release']):
     raise Exception("Can't select build mode ['debug', 'release']")
 
-AddOption(
-    '--mediaio',
-    dest='mediaio',
-    type='string',
-    nargs=1,
-    action='store',
-    metavar='DIR',
-    help='Path to root of mediaio library.'
-)
+external_include_paths=[]
+external_lib_paths=[]
 
-AddOption(
-    '--turingcodec',
-    dest='turingcodec',
-    type='string',
-    nargs=1,
-    action='store',
-    metavar='DIR',
-    help='Path to root of turingcodec library.'
-)
+def add_and_parse_library_option(library_name, include=['include'], lib=['lib']):
+    AddOption(
+        '--' + library_name,
+        dest=library_name,
+        type='string',
+        nargs=1,
+        action='store',
+        metavar='DIR',
+        help='Path to root of ' + library_name + ' library.'
+    )
 
-AddOption(
-    '--bento',
-    dest='bento',
-    type='string',
-    nargs=1,
-    action='store',
-    metavar='DIR',
-    help='Path to root of bento library.'
-)
+    library_root = GetOption(library_name)
+    if(library_root):
+        for sub_dir in include:
+            external_include_paths.append(os.path.join(library_root, sub_dir))
+        for sub_dir in lib:
+            external_lib_paths.append(os.path.join(library_root, sub_dir))
 
-AddOption(
-    '--halide',
-    dest='halide',
-    type='string',
-    nargs=1,
-    action='store',
-    metavar='DIR',
-    help='Path to root of halide library.'
-)
-
-AddOption(
-    '--seexpr',
-    dest='seexpr',
-    type='string',
-    nargs=1,
-    action='store',
-    metavar='DIR',
-    help='Path to root of seexpr library.'
-)
-
-AddOption(
-    '--freetype',
-    dest='freetype',
-    type='string',
-    nargs=1,
-    action='store',
-    metavar='DIR',
-    help='Path to root of freetype library.'
-)
-
-AddOption(
-    '--tiff',
-    dest='tiff',
-    type='string',
-    nargs=1,
-    action='store',
-    metavar='DIR',
-    help='Path to root of tiff library.'
-)
-
-AddOption(
-    '--openjpeg',
-    dest='openjpeg',
-    type='string',
-    nargs=1,
-    action='store',
-    metavar='DIR',
-    help='Path to root of openjpeg library.'
-)
-
-AddOption(
-    '--asdcplib',
-    dest='asdcplib',
-    type='string',
-    nargs=1,
-    action='store',
-    metavar='DIR',
-    help='Path to root of asdcplib library.'
-)
-
-mediaio_root = GetOption('mediaio')
-mediaio_include = ''
-mediaio_lib = ''
-if mediaio_root:
-    mediaio_include = os.path.join(mediaio_root, 'include')
-    mediaio_lib = os.path.join(mediaio_root, 'lib')
-
-turingcodec_root = GetOption('turingcodec')
-turingcodec_include = ''
-turingcodec_lib = ''
-if turingcodec_root:
-    turingcodec_include = os.path.join(turingcodec_root, 'include')
-    turingcodec_lib = os.path.join(turingcodec_root, 'lib')
-
-bento_root = GetOption('bento')
-bento_include = []
-bento_lib = ''
-if bento_root:
-    bento_include.append(os.path.join(bento_root, 'Source', 'C++', 'Core'))
-    bento_include.append(os.path.join(bento_root, 'Source', 'C++', 'Codecs'))
-    bento_include.append(os.path.join(bento_root, 'Source', 'C++', 'MetaData'))
-    bento_lib = os.path.join(bento_root, 'Build', 'Targets', 'x86_64-unknown-linux', 'Release')
-
-halide_root = GetOption('halide')
-halide_include = []
-halide_lib = []
-if halide_root:
-    halide_include = os.path.join(halide_root, 'include')
-    # halide_lib.append(os.path.join(halide_root, 'lib'))
-    halide_lib.append(os.path.join(halide_root, 'bin'))
-
-seexpr_root = GetOption('seexpr')
-seexpr_include = []
-seexpr_lib = []
-if seexpr_root:
-    seexpr_include = os.path.join(seexpr_root, 'include')
-    seexpr_lib.append(os.path.join(seexpr_root, 'lib'))
-
-freetype_root = GetOption('freetype')
-freetype_include = []
-freetype_lib = []
-if freetype_root:
-    freetype_include.append(os.path.join(freetype_root, 'include'))
-    freetype_include.append(os.path.join(freetype_root, 'include', 'freetype2'))
-    freetype_lib.append(os.path.join(freetype_root, 'lib'))
-
-tiff_root = GetOption('tiff')
-tiff_include = []
-tiff_lib = []
-if tiff_root:
-    tiff_include.append(os.path.join(tiff_root, 'include'))
-    tiff_lib.append(os.path.join(tiff_root, 'lib'))
-
-openjpeg_root = GetOption('openjpeg')
-openjpeg_include = []
-openjpeg_lib = []
-if openjpeg_root:
-    openjpeg_include.append(os.path.join(openjpeg_root, 'include'))
-    openjpeg_lib.append(os.path.join(openjpeg_root, 'lib'))
-
-asdcplib_root = GetOption('asdcplib')
-asdcplib_include = []
-asdcplib_lib = []
-if openjpeg_root:
-    asdcplib_include.append(os.path.join(asdcplib_root, 'include'))
-    asdcplib_lib.append(os.path.join(asdcplib_root, 'lib'))
+add_and_parse_library_option('mediaio')
+add_and_parse_library_option('turingcodec')
+add_and_parse_library_option('bento', [
+        'Source/C++/Core'
+        'Source/C++/Codecs'
+        'Source/C++/MetaData'
+    ], [
+        'Build/Targets/x86_64-unknown-linux/Release'
+    ])
+add_and_parse_library_option('halide', ['include'], ['bin'])
+add_and_parse_library_option('seexpr')
+add_and_parse_library_option('freetype', [
+        'include',
+        'include/freetype2'
+    ])
+add_and_parse_library_option('tiff')
+add_and_parse_library_option('openjpeg')
+add_and_parse_library_option('asdcplib')
 
 env = Environment()
 
 env.Append(
     CPPPATH = [
         '#src',
-        mediaio_include,
-        turingcodec_include,
-        bento_include,
-        halide_include,
-        seexpr_include,
-        freetype_include,
-        tiff_include,
-        openjpeg_include,
-        asdcplib_include,
+        external_include_paths
     ],
     DPATH = [
         '#src',
@@ -188,15 +63,7 @@ env.Append(
     ],
     LIBPATH = [
         '#src',
-        mediaio_lib,
-        turingcodec_lib,
-        bento_lib,
-        halide_lib,
-        seexpr_lib,
-        freetype_lib,
-        tiff_lib,
-        openjpeg_lib,
-        asdcplib_lib
+        external_lib_paths
     ],
 )
 
