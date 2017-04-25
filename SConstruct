@@ -56,6 +56,16 @@ AddOption(
     help='Path to root of seexpr library.'
 )
 
+AddOption(
+    '--freetype',
+    dest='freetype',
+    type='string',
+    nargs=1,
+    action='store',
+    metavar='DIR',
+    help='Path to root of freetype library.'
+)
+
 mediaio_root = GetOption('mediaio')
 mediaio_include = ''
 mediaio_lib = ''
@@ -94,6 +104,14 @@ if seexpr_root:
     seexpr_include = os.path.join(seexpr_root, 'include')
     seexpr_lib.append(os.path.join(seexpr_root, 'lib'))
 
+freetype_root = GetOption('freetype')
+freetype_include = []
+freetype_lib = []
+if freetype_root:
+    freetype_include.append(os.path.join(freetype_root, 'include'))
+    freetype_include.append(os.path.join(freetype_root, 'include', 'freetype2'))
+    freetype_lib.append(os.path.join(freetype_root, 'lib'))
+
 env = Environment()
 
 env.Append(
@@ -104,6 +122,7 @@ env.Append(
         bento_include,
         halide_include,
         seexpr_include,
+        freetype_include,
     ],
     DPATH = [
         '#src',
@@ -120,6 +139,7 @@ env.Append(
         bento_lib,
         halide_lib,
         seexpr_lib,
+        freetype_lib,
     ],
 )
 

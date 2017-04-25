@@ -177,8 +177,23 @@ if conf.CheckLibWithHeader('SeExpr', 'SeExpression.h', 'c++'):
     )
     env.Alias('install', env.InstallVersionedLib('plugin/seexpr.miop.bundle/Contents/' + platform, SeExprPlugin))
 else:
-    print 'Did not find Bento4 library!'
+    print 'Did not find SeExpr library!'
 
+if conf.CheckLibWithHeader('freetype', 'freetype2/ft2build.h', 'c'):
+    SeExprPlugin = env.SharedLibrary(
+        'text',
+        Glob( 'text/*.cpp' ),
+        LIBS=[
+            'mediaio-api',
+            'freetype',
+        ],
+        SHLIBPREFIX = "",
+        SHLIBSUFFIX = ".miop",
+        SHLIBVERSION = "",
+    )
+    env.Alias('install', env.InstallVersionedLib('plugin/text.miop.bundle/Contents/' + platform, SeExprPlugin))
+else:
+    print 'Did not find Freetype library!'
 
 env.Alias('install', env.InstallVersionedLib('plugin/filesystem.miop.bundle/Contents/' + platform,    FileSystemPlugin    ))
 env.Alias('install', env.InstallVersionedLib('plugin/sequence.miop.bundle/Contents/' + platform,      SequencePlugin      ))
