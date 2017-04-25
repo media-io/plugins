@@ -225,6 +225,22 @@ if conf.CheckLibWithHeader(['tiff', 'tiffxx'], 'tiff.h', 'c'):
 else:
     print 'Did not find tiff library!'
 
+if conf.CheckLibWithHeader('openjp2', 'openjpeg-2.1/openjpeg.h', 'c'):
+    SeExprPlugin = env.SharedLibrary(
+        'openjpeg',
+        Glob( 'openjpeg/*.cpp' ),
+        LIBS=[
+            'mediaio-api',
+            'openjp2'
+        ],
+        SHLIBPREFIX = "",
+        SHLIBSUFFIX = ".miop",
+        SHLIBVERSION = "",
+    )
+    env.Alias('install', env.InstallVersionedLib('plugin/openjpeg.miop.bundle/Contents/' + platform, SeExprPlugin))
+else:
+    print 'Did not find openjpeg library!'
+
 env.Alias('install', env.InstallVersionedLib('plugin/filesystem.miop.bundle/Contents/' + platform,    FileSystemPlugin    ))
 env.Alias('install', env.InstallVersionedLib('plugin/sequence.miop.bundle/Contents/' + platform,      SequencePlugin      ))
 env.Alias('install', env.InstallVersionedLib('plugin/statistics.miop.bundle/Contents/' + platform,    StatisticsPlugin    ))

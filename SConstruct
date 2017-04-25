@@ -76,6 +76,16 @@ AddOption(
     help='Path to root of tiff library.'
 )
 
+AddOption(
+    '--openjpeg',
+    dest='openjpeg',
+    type='string',
+    nargs=1,
+    action='store',
+    metavar='DIR',
+    help='Path to root of openjpeg library.'
+)
+
 mediaio_root = GetOption('mediaio')
 mediaio_include = ''
 mediaio_lib = ''
@@ -129,6 +139,12 @@ if tiff_root:
     tiff_include.append(os.path.join(tiff_root, 'include'))
     tiff_lib.append(os.path.join(tiff_root, 'lib'))
 
+openjpeg_root = GetOption('openjpeg')
+openjpeg_include = []
+openjpeg_lib = []
+if openjpeg_root:
+    openjpeg_include.append(os.path.join(openjpeg_root, 'include'))
+    openjpeg_lib.append(os.path.join(openjpeg_root, 'lib'))
 
 env = Environment()
 
