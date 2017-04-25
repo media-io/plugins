@@ -97,6 +97,22 @@ if conf.CheckLibWithHeader('turing', 'turing.h', 'c'):
 else:
     print 'Did not find turingcodec library!'
 
+if conf.CheckLibWithHeader('Bento4', 'Ap4.h', 'c++'):
+    BentoTSPlugin = env.SharedLibrary(
+        'bento_ts',
+        Glob( 'bento_ts/*.cpp' ),
+        LIBS=[
+            'mediaio-api',
+            'Bento4',
+        ],
+        SHLIBPREFIX = "",
+        SHLIBSUFFIX = ".miop",
+        SHLIBVERSION = "",
+    )
+    env.Alias('install', env.InstallVersionedLib('plugin/bento_ts.miop.bundle/Contents/' + platform, BentoTSPlugin))
+else:
+    print 'Did not find Bento4 library!'
+
 env.Alias('install', env.InstallVersionedLib('plugin/filesystem.miop.bundle/Contents/' + platform,    FileSystemPlugin    ))
 env.Alias('install', env.InstallVersionedLib('plugin/sequence.miop.bundle/Contents/' + platform,      SequencePlugin      ))
 env.Alias('install', env.InstallVersionedLib('plugin/statistics.miop.bundle/Contents/' + platform,    StatisticsPlugin    ))

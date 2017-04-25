@@ -3,6 +3,8 @@
 
 #include <mediaio/api/encoder/encoder.h>
 
+#include <vector>
+
 typedef struct turing_encoder turing_encoder;
 
 class Encoder
@@ -18,6 +20,7 @@ private:
 
 	bool init(Frame* frame);
 	turing_encoder* _encoder;
+	std::vector<uint8_t> _header;
 	size_t _pts;
 	bool _init;
 };

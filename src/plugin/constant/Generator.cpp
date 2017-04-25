@@ -6,7 +6,7 @@
 Generator::Generator()
 	: _width(1920)
 	, _height(1080)
-	, _precision(16)
+	, _precision(8)
 	, _components(3)
 {
 }
@@ -57,20 +57,20 @@ MediaioStatus Generator::generate(Frame* frame)
 
 		resize_component(&component, _width * _height * _precision / 8);
 
-		uint16_t* ptr = (uint16_t*)component.data;
 
 
-		// memset((uint8_t*)component.data, 0xFF, component.size);
+		memset((uint8_t*)component.data, 0xFF, component.size);
 
-		for (size_t y = 0; y < _height; ++y)
-		{
-			for (size_t x = 0; x < _width; ++x)
-			{
-				*ptr = 0xFFFF;
-				// *ptr = c * 0;
-				++ptr;
-			}
-		}
+		// uint16_t* ptr = (uint16_t*)component.data;
+		// for (size_t y = 0; y < _height; ++y)
+		// {
+		// 	for (size_t x = 0; x < _width; ++x)
+		// 	{
+		// 		*ptr = 0xFFFF;
+		// 		// *ptr = c * 0;
+		// 		++ptr;
+		// 	}
+		// }
 	}
 	return kMediaioStatusOK;
 }

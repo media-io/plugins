@@ -26,6 +26,16 @@ AddOption(
     help='Path to root of turingcodec library.'
 )
 
+AddOption(
+    '--bento',
+    dest='bento',
+    type='string',
+    nargs=1,
+    action='store',
+    metavar='DIR',
+    help='Path to root of bento library.'
+)
+
 mediaio_root = GetOption('mediaio')
 mediaio_include = ''
 mediaio_lib = ''
@@ -40,6 +50,15 @@ if turingcodec_root:
     turingcodec_include = os.path.join( turingcodec_root, 'include' )
     turingcodec_lib = os.path.join( turingcodec_root, 'lib' )
 
+bento_root = GetOption('bento')
+bento_include = []
+bento_lib = ''
+if bento_root:
+    bento_include.append(os.path.join(bento_root, 'Source', 'C++', 'Core'))
+    bento_include.append(os.path.join(bento_root, 'Source', 'C++', 'Codecs'))
+    bento_include.append(os.path.join(bento_root, 'Source', 'C++', 'MetaData'))
+    bento_lib = os.path.join( bento_root, 'Build', 'Targets', 'x86_64-unknown-linux', 'Release' )
+
 env = Environment()
 
 env.Append(
@@ -47,6 +66,7 @@ env.Append(
         '#src',
         mediaio_include,
         turingcodec_include,
+        bento_include,
     ],
     DPATH = [
         '#src',
@@ -60,6 +80,7 @@ env.Append(
         '#src',
         mediaio_lib,
         turingcodec_lib,
+        bento_lib,
     ],
 )
 

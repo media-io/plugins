@@ -52,8 +52,13 @@ bool Encoder::init(Frame* frame)
 	*p++ = s += 1 + snprintf(s, end - s, "--max-gop-n=%d", gop_n);
 	*p++ = s += 1 + snprintf(s, end - s, "--max-gop-m=%d", gop_m);
 
+	int sar_num = 1;
+	int sar_den = 1;
+	*p++ = s += 1 + snprintf(s, end - s, "--sar=%d:%d", sar_num, sar_den);
+
 	*p++ = s += 1 + snprintf(s, end - s, "--verbosity=%d", 0);
 	*p++ = s += 1 + snprintf(s, end - s, "--speed=fast");
+	*p++ = s += 1 + snprintf(s, end - s, "--repeat-headers");
 
 	*p++ = s += 1 + snprintf(s, end - s, "dummy-input-filename");
 
@@ -80,6 +85,12 @@ bool Encoder::init(Frame* frame)
 		std::cout << "ERROR: turing codec options" << std::endl;
 		return false;
 	}
+
+	turing_bitstream const *bitstream;
+	bitstream = turing_encode_headers(_encoder);
+
+	_header.resize(bitstream->size);
+	memcpy(&_header[0], bitstream->p, bitstream->size);
 
 	_pts = 0;
 	return true;
@@ -120,8 +131,21 @@ MediaioStatus Encoder::encode(Frame* frame, CodedData* codedFrame)
 
 	if(output)
 	{
-		resize_coded_data(codedFrame, output->bitstream.size);
-		memcpy(codedFrame->data, output->bitstream.p, output->bitstream.size);
+		resize_coded_data(codedFrame, output->bitstream.size + _header.size());
+		uint8_t* ptr = (uint8_t*)codedFrame->data;
+		if(_header.size())
+		{
+			memcpy(ptr, &_header[0], _header.size());
+			ptr += _header.size();
+			_header.clear();
+		}
+		else
+		{
+			resize_coded_data(codedFrame, output->bitstream.size);
+		}
+
+		memcpy(ptr, output->bitstream.p, output->bitstream.size);
+		// std::cout << "PTS " << output->bitstream.pts << std::endl;
 	}
 	return kMediaioStatusOK;
 }
