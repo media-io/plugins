@@ -40,228 +40,111 @@ def getPlatformName():
 
     raise "Unknown Platform (%s, %s)" % (osname, sysplatform)
 
+def plugin(bundle, libraries = [], headers = [], code_style = 'c'):
+
+    if(len(libraries)):
+        if(not conf.CheckLibWithHeader(libraries, headers, code_style)):
+            print 'Missing depedencies for target ' + bundle
+            return
+
+    bundle_target = env.SharedLibrary(
+        bundle,
+        Glob(bundle + '/*.cpp'),
+        LIBS = [
+            'mediaio-api',
+            libraries
+        ],
+        SHLIBPREFIX = "",
+        SHLIBSUFFIX = ".miop",
+        SHLIBVERSION = "",
+    )
+
+    env.Alias('install', env.InstallVersionedLib('plugin/' + bundle + '.miop.bundle/Contents/' + platform, bundle_target))
+
+
 platform = getPlatformName()
 
-FileSystemPlugin = env.SharedLibrary(
-    'filesystem',
-    Glob( 'filesystem/*.cpp' ),
-    LIBS = [
-        'mediaio-api',
+
+plugin('filesystem')
+plugin('sequence')
+plugin('statistics')
+plugin('comparator')
+plugin('psnr')
+plugin('constant')
+
+plugin('turingcodec', [
+        'turing',
+        'havoc',
+        'pthread',
+        'boost_system',
+        'boost_chrono',
+        'boost_filesystem',
+        'boost_program_options',
+        'boost_timer'
+    ], [
+        'turing.h'
+    ])
+
+plugin('bento_ts', [
+        'Bento4'
+    ], [
+        'Ap4.h'
     ],
-    SHLIBPREFIX = "",
-    SHLIBSUFFIX = ".miop",
-    SHLIBVERSION = "",
-)
+    'c++')
 
-SequencePlugin = env.SharedLibrary(
-    'sequence',
-    Glob( 'sequence/*.cpp' ),
-    LIBS = [
-        'mediaio-api',
+plugin('bento_ts', [
+        'Bento4'
+    ], [
+        'Ap4.h'
     ],
-    SHLIBPREFIX = "",
-    SHLIBSUFFIX = ".miop",
-    SHLIBVERSION = "",
-)
+    'c++')
 
-StatisticsPlugin = env.SharedLibrary(
-    'statistics',
-    Glob( 'statistics/*.cpp' ),
-    LIBS = [
-        'mediaio-api',
+plugin('gamma', [
+        'Halide'
+    ], [
+        'Halide.h'
     ],
-    SHLIBPREFIX = "",
-    SHLIBSUFFIX = ".miop",
-    SHLIBVERSION = "",
-)
+    'c++')
 
-ComparatorPlugin = env.SharedLibrary(
-    'comparator',
-    Glob( 'comparator/*.cpp' ),
-    LIBS = [
-        'mediaio-api',
+plugin('math', [
+        'Halide'
+    ], [
+        'Halide.h'
     ],
-    SHLIBPREFIX = "",
-    SHLIBSUFFIX = ".miop",
-    SHLIBVERSION = "",
-)
+    'c++')
 
-PsnrPlugin = env.SharedLibrary(
-    'psnr',
-    Glob( 'psnr/*.cpp' ),
-    LIBS = [
-        'mediaio-api',
+plugin('seexpr', [
+        'SeExpr'
+    ], [
+        'SeExpression.h'
     ],
-    SHLIBPREFIX = "",
-    SHLIBSUFFIX = ".miop",
-    SHLIBVERSION = "",
-)
+    'c++')
 
-ConstantPlugin = env.SharedLibrary(
-    'constant',
-    Glob( 'constant/*.cpp' ),
-    LIBS=[
-        'mediaio-api',
-    ],
-    SHLIBPREFIX = "",
-    SHLIBSUFFIX = ".miop",
-    SHLIBVERSION = "",
-)
+plugin('text', [
+        'freetype'
+    ], [
+        'freetype2/ft2build.h'
+    ])
 
-if conf.CheckLibWithHeader('turing', 'turing.h', 'c'):
-    TuringcodecPlugin = env.SharedLibrary(
-        'turingcodec',
-        Glob( 'turingcodec/*.cpp' ),
-        LIBS=[
-            'mediaio-api',
-            'turing',
-            'havoc',
-            'pthread',
-            'boost_system',
-            'boost_chrono',
-            'boost_filesystem',
-            'boost_program_options',
-            'boost_timer',
-        ],
-        SHLIBPREFIX = "",
-        SHLIBSUFFIX = ".miop",
-        SHLIBVERSION = "",
-    )
-    env.Alias('install', env.InstallVersionedLib('plugin/turingcodec.miop.bundle/Contents/' + platform, TuringcodecPlugin))
-else:
-    print 'Did not find turingcodec library!'
-
-if conf.CheckLibWithHeader('Bento4', 'Ap4.h', 'c++'):
-    BentoTSPlugin = env.SharedLibrary(
-        'bento_ts',
-        Glob( 'bento_ts/*.cpp' ),
-        LIBS=[
-            'mediaio-api',
-            'Bento4',
-        ],
-        SHLIBPREFIX = "",
-        SHLIBSUFFIX = ".miop",
-        SHLIBVERSION = "",
-    )
-    env.Alias('install', env.InstallVersionedLib('plugin/bento_ts.miop.bundle/Contents/' + platform, BentoTSPlugin))
-else:
-    print 'Did not find Bento4 library!'
-
-if conf.CheckLibWithHeader('Halide', 'Halide.h', 'c++'):
-    GammaPlugin = env.SharedLibrary(
-        'gamma',
-        Glob('gamma/*.cpp'),
-        LIBS=[
-            'mediaio-api',
-            'Halide',
-        ],
-        SHLIBPREFIX = "",
-        SHLIBSUFFIX = ".miop",
-        SHLIBVERSION = "",
-    )
-    MathPlugin = env.SharedLibrary(
-        'math',
-        Glob('math/*.cpp'),
-        LIBS=[
-            'mediaio-api',
-            'Halide',
-        ],
-        SHLIBPREFIX = "",
-        SHLIBSUFFIX = ".miop",
-        SHLIBVERSION = "",
-    )
-    env.Alias('install', env.InstallVersionedLib('plugin/gamma.miop.bundle/Contents/' + platform, GammaPlugin))
-    env.Alias('install', env.InstallVersionedLib('plugin/math.miop.bundle/Contents/' + platform, MathPlugin))
-else:
-    print 'Did not find Bento4 library!'
-
-if conf.CheckLibWithHeader('SeExpr', 'SeExpression.h', 'c++'):
-    SeExprPlugin = env.SharedLibrary(
-        'seexpr',
-        Glob( 'seexpr/*.cpp' ),
-        LIBS=[
-            'mediaio-api',
-            'SeExpr',
-        ],
-        SHLIBPREFIX = "",
-        SHLIBSUFFIX = ".miop",
-        SHLIBVERSION = "",
-    )
-    env.Alias('install', env.InstallVersionedLib('plugin/seexpr.miop.bundle/Contents/' + platform, SeExprPlugin))
-else:
-    print 'Did not find SeExpr library!'
-
-if conf.CheckLibWithHeader('freetype', 'freetype2/ft2build.h', 'c'):
-    TextPlugin = env.SharedLibrary(
-        'text',
-        Glob( 'text/*.cpp' ),
-        LIBS=[
-            'mediaio-api',
-            'freetype',
-        ],
-        SHLIBPREFIX = "",
-        SHLIBSUFFIX = ".miop",
-        SHLIBVERSION = "",
-    )
-    env.Alias('install', env.InstallVersionedLib('plugin/text.miop.bundle/Contents/' + platform, TextPlugin))
-else:
-    print 'Did not find Freetype library!'
-
-
-if conf.CheckLibWithHeader(['tiff', 'tiffxx'], 'tiff.h', 'c'):
-    TiffPlugin = env.SharedLibrary(
+plugin('tiff', [
         'tiff',
-        Glob( 'tiff/*.cpp' ),
-        LIBS=[
-            'mediaio-api',
-            'tiff',
-            'tiffxx',
-        ],
-        SHLIBPREFIX = "",
-        SHLIBSUFFIX = ".miop",
-        SHLIBVERSION = "",
-    )
-    env.Alias('install', env.InstallVersionedLib('plugin/tiff.miop.bundle/Contents/' + platform, TiffPlugin))
-else:
-    print 'Did not find tiff library!'
+        'tiffxx'
+    ], [
+        'tiff.h'
+    ])
 
-if conf.CheckLibWithHeader('openjp2', 'openjpeg-2.1/openjpeg.h', 'c'):
-    OpenJpegPlugin = env.SharedLibrary(
-        'openjpeg',
-        Glob( 'openjpeg/*.cpp' ),
-        LIBS=[
-            'mediaio-api',
-            'openjp2'
-        ],
-        SHLIBPREFIX = "",
-        SHLIBSUFFIX = ".miop",
-        SHLIBVERSION = "",
-    )
-    env.Alias('install', env.InstallVersionedLib('plugin/openjpeg.miop.bundle/Contents/' + platform, OpenJpegPlugin))
-else:
-    print 'Did not find openjpeg library!'
+plugin('openjpeg', [
+        'openjp2'
+    ], [
+        'openjpeg-2.1/openjpeg.h'
+    ])
 
-if conf.CheckLibWithHeader(['kumu', 'as02', 'asdcp'], ['AS_02.h', 'AS_DCP.h'], 'c++'):
-    AsdcplibPlugin = env.SharedLibrary(
-        'asdcplib',
-        Glob( 'asdcplib/*.cpp' ),
-        LIBS=[
-            'mediaio-api',
-            'kumu',
-            'as02',
-            'asdcp'
-        ],
-        SHLIBPREFIX = "",
-        SHLIBSUFFIX = ".miop",
-        SHLIBVERSION = "",
-    )
-    env.Alias('install', env.InstallVersionedLib('plugin/asdcplib.miop.bundle/Contents/' + platform, AsdcplibPlugin))
-else:
-    print 'Did not find AS DCP library!'
-
-env.Alias('install', env.InstallVersionedLib('plugin/filesystem.miop.bundle/Contents/' + platform,    FileSystemPlugin    ))
-env.Alias('install', env.InstallVersionedLib('plugin/sequence.miop.bundle/Contents/' + platform,      SequencePlugin      ))
-env.Alias('install', env.InstallVersionedLib('plugin/statistics.miop.bundle/Contents/' + platform,    StatisticsPlugin    ))
-env.Alias('install', env.InstallVersionedLib('plugin/comparator.miop.bundle/Contents/' + platform,    ComparatorPlugin    ))
-env.Alias('install', env.InstallVersionedLib('plugin/psnr.miop.bundle/Contents/' + platform,          PsnrPlugin          ))
-env.Alias('install', env.InstallVersionedLib('plugin/constant.miop.bundle/Contents/' + platform,      ConstantPlugin      ))
+plugin('asdcplib', [
+        'kumu',
+        'as02',
+        'asdcp'
+    ], [
+        'AS_02.h',
+        'AS_DCP.h'
+    ],
+    'c++')
