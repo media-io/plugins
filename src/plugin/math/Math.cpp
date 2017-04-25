@@ -3,6 +3,9 @@
 
 #include <mediaio/api/instance/instance.h>
 
+// #include <iostream>
+// #include <vector>
+
 MediaioStatus createInstance(void** handle)
 {
 	Filter* instance = new Filter();
@@ -35,6 +38,7 @@ static MediaioPluginInstance FilterInstance =
 	deleteInstance
 };
 
+
 static MediaioPluginFilter Filter =
 {
 	configure,
@@ -45,13 +49,13 @@ static MediaioPluginFilter Filter =
 // The main function
 static void* pluginActionFilter( const char *action )
 {
-	if( ! strcmp( action, kMediaioGetInstancePlugin ) )
-	{
-		return &FilterInstance;
-	}
 	if( ! strcmp( action, kMediaioGetFilterPlugin ) )
 	{
 		return &Filter;
+	}
+	if( ! strcmp( action, kMediaioGetInstancePlugin ) )
+	{
+		return &FilterInstance;
 	}
 	return nullptr;
 }
@@ -61,13 +65,13 @@ extern "C"
 
 ////////////////////////////////////////////////////////////////////////////////
 // the plugin struct 
-static MediaioPlugin Gamma = 
+static MediaioPlugin Math = 
 {
 	kMediaioFilterPluginApi,
 	1,
-	"fr.co.mediaio:gamma",
-	"Gamma",
-	"Apply a gamma on image",
+	"fr.co.mediaio:math",
+	"Math",
+	"Apply math operator on a image (plus, minus, multiply, division)",
 	1,
 	0,
 	pluginActionFilter
@@ -76,7 +80,7 @@ static MediaioPlugin Gamma =
 MediaioPlugin* mediaio_get_plugin(int nth)
 {
 	if(nth == 0)
-		return &Gamma;
+		return &Math;
 	return 0;
 }
  

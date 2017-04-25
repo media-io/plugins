@@ -150,7 +150,18 @@ else:
 if conf.CheckLibWithHeader('Halide', 'Halide.h', 'c++'):
     GammaPlugin = env.SharedLibrary(
         'gamma',
-        Glob( 'gamma/*.cpp' ),
+        Glob('gamma/*.cpp'),
+        LIBS=[
+            'mediaio-api',
+            'Halide',
+        ],
+        SHLIBPREFIX = "",
+        SHLIBSUFFIX = ".miop",
+        SHLIBVERSION = "",
+    )
+    MathPlugin = env.SharedLibrary(
+        'math',
+        Glob('math/*.cpp'),
         LIBS=[
             'mediaio-api',
             'Halide',
@@ -160,6 +171,7 @@ if conf.CheckLibWithHeader('Halide', 'Halide.h', 'c++'):
         SHLIBVERSION = "",
     )
     env.Alias('install', env.InstallVersionedLib('plugin/gamma.miop.bundle/Contents/' + platform, GammaPlugin))
+    env.Alias('install', env.InstallVersionedLib('plugin/math.miop.bundle/Contents/' + platform, MathPlugin))
 else:
     print 'Did not find Bento4 library!'
 
