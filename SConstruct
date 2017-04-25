@@ -86,6 +86,16 @@ AddOption(
     help='Path to root of openjpeg library.'
 )
 
+AddOption(
+    '--asdcplib',
+    dest='asdcplib',
+    type='string',
+    nargs=1,
+    action='store',
+    metavar='DIR',
+    help='Path to root of asdcplib library.'
+)
+
 mediaio_root = GetOption('mediaio')
 mediaio_include = ''
 mediaio_lib = ''
@@ -146,6 +156,13 @@ if openjpeg_root:
     openjpeg_include.append(os.path.join(openjpeg_root, 'include'))
     openjpeg_lib.append(os.path.join(openjpeg_root, 'lib'))
 
+asdcplib_root = GetOption('asdcplib')
+asdcplib_include = []
+asdcplib_lib = []
+if openjpeg_root:
+    asdcplib_include.append(os.path.join(asdcplib_root, 'include'))
+    asdcplib_lib.append(os.path.join(asdcplib_root, 'lib'))
+
 env = Environment()
 
 env.Append(
@@ -157,6 +174,9 @@ env.Append(
         halide_include,
         seexpr_include,
         freetype_include,
+        tiff_include,
+        openjpeg_include,
+        asdcplib_include,
     ],
     DPATH = [
         '#src',
@@ -174,6 +194,9 @@ env.Append(
         halide_lib,
         seexpr_lib,
         freetype_lib,
+        tiff_lib,
+        openjpeg_lib,
+        asdcplib_lib
     ],
 )
 

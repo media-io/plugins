@@ -192,7 +192,7 @@ else:
     print 'Did not find SeExpr library!'
 
 if conf.CheckLibWithHeader('freetype', 'freetype2/ft2build.h', 'c'):
-    SeExprPlugin = env.SharedLibrary(
+    TextPlugin = env.SharedLibrary(
         'text',
         Glob( 'text/*.cpp' ),
         LIBS=[
@@ -203,13 +203,13 @@ if conf.CheckLibWithHeader('freetype', 'freetype2/ft2build.h', 'c'):
         SHLIBSUFFIX = ".miop",
         SHLIBVERSION = "",
     )
-    env.Alias('install', env.InstallVersionedLib('plugin/text.miop.bundle/Contents/' + platform, SeExprPlugin))
+    env.Alias('install', env.InstallVersionedLib('plugin/text.miop.bundle/Contents/' + platform, TextPlugin))
 else:
     print 'Did not find Freetype library!'
 
 
 if conf.CheckLibWithHeader(['tiff', 'tiffxx'], 'tiff.h', 'c'):
-    SeExprPlugin = env.SharedLibrary(
+    TiffPlugin = env.SharedLibrary(
         'tiff',
         Glob( 'tiff/*.cpp' ),
         LIBS=[
@@ -221,12 +221,12 @@ if conf.CheckLibWithHeader(['tiff', 'tiffxx'], 'tiff.h', 'c'):
         SHLIBSUFFIX = ".miop",
         SHLIBVERSION = "",
     )
-    env.Alias('install', env.InstallVersionedLib('plugin/tiff.miop.bundle/Contents/' + platform, SeExprPlugin))
+    env.Alias('install', env.InstallVersionedLib('plugin/tiff.miop.bundle/Contents/' + platform, TiffPlugin))
 else:
     print 'Did not find tiff library!'
 
 if conf.CheckLibWithHeader('openjp2', 'openjpeg-2.1/openjpeg.h', 'c'):
-    SeExprPlugin = env.SharedLibrary(
+    OpenJpegPlugin = env.SharedLibrary(
         'openjpeg',
         Glob( 'openjpeg/*.cpp' ),
         LIBS=[
@@ -237,9 +237,27 @@ if conf.CheckLibWithHeader('openjp2', 'openjpeg-2.1/openjpeg.h', 'c'):
         SHLIBSUFFIX = ".miop",
         SHLIBVERSION = "",
     )
-    env.Alias('install', env.InstallVersionedLib('plugin/openjpeg.miop.bundle/Contents/' + platform, SeExprPlugin))
+    env.Alias('install', env.InstallVersionedLib('plugin/openjpeg.miop.bundle/Contents/' + platform, OpenJpegPlugin))
 else:
     print 'Did not find openjpeg library!'
+
+if conf.CheckLibWithHeader(['kumu', 'as02', 'asdcp'], ['AS_02.h', 'AS_DCP.h'], 'c++'):
+    AsdcplibPlugin = env.SharedLibrary(
+        'asdcplib',
+        Glob( 'asdcplib/*.cpp' ),
+        LIBS=[
+            'mediaio-api',
+            'kumu',
+            'as02',
+            'asdcp'
+        ],
+        SHLIBPREFIX = "",
+        SHLIBSUFFIX = ".miop",
+        SHLIBVERSION = "",
+    )
+    env.Alias('install', env.InstallVersionedLib('plugin/asdcplib.miop.bundle/Contents/' + platform, AsdcplibPlugin))
+else:
+    print 'Did not find AS DCP library!'
 
 env.Alias('install', env.InstallVersionedLib('plugin/filesystem.miop.bundle/Contents/' + platform,    FileSystemPlugin    ))
 env.Alias('install', env.InstallVersionedLib('plugin/sequence.miop.bundle/Contents/' + platform,      SequencePlugin      ))
