@@ -1,12 +1,46 @@
 
+import os
+import sys
+
 Import('env')
 Import('conf')
 
-# platform = 'win32'
-# platform = 'win64'
-# platform = 'MacOS'
-# platform = 'Linux-x86'
-platform = 'Linux-x86-64'
+def getPlatformName():
+    '''Get the name of the current platform.
+    One of the followings :
+        * MacOS - for Apple Macintosh OS X (compiled 32 bit)
+        * Win32 - for Microsoft Windows (compiled 32 bit)
+        * IRIX - for SGI IRIX plug-ins (compiled 32 bit)
+        * IRIX64 - for SGI IRIX plug-ins (compiled 64 bit)
+        * Linux-x86 - for Linux on intel x86 CPUs (compiled 32 bit)
+        * Linux-x86-64 - for Linux on intel x86 CPUs running AMD's 64 bit extensions
+    '''
+    osname = os.name.lower()
+    sysplatform = sys.platform.lower();
+    if osname == "posix":
+        if sysplatform.find("linux") >= 0:
+            if bits == 64:
+                return 'Linux-x86-64'
+            return 'Linux-x86'
+        elif sysplatform.find("cygwin") >= 0:
+            if bits == 64:
+                return 'Linux-x86-64'
+            return 'Linux-x86'
+        elif sysplatform.find("darwin") >= 0:
+            return 'MacOS'
+        elif sysplatform.find("irix") >= 0:
+            if bits == 64:
+                return 'IRIX64'
+            return 'IRIX'
+    elif osname == "nt":
+        if sysplatform.startswith("win"):
+            return 'Win' + str(bits)
+        elif sysplatform.find("cygwin") >= 0:
+            return 'Win' + str(bits)
+
+    raise "Unknown Platform (%s, %s)" % (osname, sysplatform)
+
+platform = getPlatformName()
 
 FileSystemPlugin = env.SharedLibrary(
     'filesystem',
@@ -112,6 +146,24 @@ if conf.CheckLibWithHeader('Bento4', 'Ap4.h', 'c++'):
     env.Alias('install', env.InstallVersionedLib('plugin/bento_ts.miop.bundle/Contents/' + platform, BentoTSPlugin))
 else:
     print 'Did not find Bento4 library!'
+
+
+if conf.CheckLibWithHeader('Halide', 'Halide.h', 'c++'):
+    BentoTSPlugin = env.SharedLibrary(
+        'gamma',
+        Glob( 'gamma/*.cpp' ),
+        LIBS=[
+            'mediaio-api',
+            'Halide',
+        ],
+        SHLIBPREFIX = "",
+        SHLIBSUFFIX = ".miop",
+        SHLIBVERSION = "",
+    )
+    env.Alias('install', env.InstallVersionedLib('plugin/gamma.miop.bundle/Contents/' + platform, BentoTSPlugin))
+else:
+    print 'Did not find Bento4 library!'
+
 
 env.Alias('install', env.InstallVersionedLib('plugin/filesystem.miop.bundle/Contents/' + platform,    FileSystemPlugin    ))
 env.Alias('install', env.InstallVersionedLib('plugin/sequence.miop.bundle/Contents/' + platform,      SequencePlugin      ))
