@@ -195,6 +195,24 @@ if conf.CheckLibWithHeader('freetype', 'freetype2/ft2build.h', 'c'):
 else:
     print 'Did not find Freetype library!'
 
+
+if conf.CheckLibWithHeader(['tiff', 'tiffxx'], 'tiff.h', 'c'):
+    SeExprPlugin = env.SharedLibrary(
+        'tiff',
+        Glob( 'tiff/*.cpp' ),
+        LIBS=[
+            'mediaio-api',
+            'tiff',
+            'tiffxx',
+        ],
+        SHLIBPREFIX = "",
+        SHLIBSUFFIX = ".miop",
+        SHLIBVERSION = "",
+    )
+    env.Alias('install', env.InstallVersionedLib('plugin/tiff.miop.bundle/Contents/' + platform, SeExprPlugin))
+else:
+    print 'Did not find tiff library!'
+
 env.Alias('install', env.InstallVersionedLib('plugin/filesystem.miop.bundle/Contents/' + platform,    FileSystemPlugin    ))
 env.Alias('install', env.InstallVersionedLib('plugin/sequence.miop.bundle/Contents/' + platform,      SequencePlugin      ))
 env.Alias('install', env.InstallVersionedLib('plugin/statistics.miop.bundle/Contents/' + platform,    StatisticsPlugin    ))

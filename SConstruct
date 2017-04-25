@@ -66,6 +66,16 @@ AddOption(
     help='Path to root of freetype library.'
 )
 
+AddOption(
+    '--tiff',
+    dest='tiff',
+    type='string',
+    nargs=1,
+    action='store',
+    metavar='DIR',
+    help='Path to root of tiff library.'
+)
+
 mediaio_root = GetOption('mediaio')
 mediaio_include = ''
 mediaio_lib = ''
@@ -94,7 +104,7 @@ halide_include = []
 halide_lib = []
 if halide_root:
     halide_include = os.path.join(halide_root, 'include')
-    halide_lib.append(os.path.join(halide_root, 'lib'))
+    # halide_lib.append(os.path.join(halide_root, 'lib'))
     halide_lib.append(os.path.join(halide_root, 'bin'))
 
 seexpr_root = GetOption('seexpr')
@@ -111,6 +121,14 @@ if freetype_root:
     freetype_include.append(os.path.join(freetype_root, 'include'))
     freetype_include.append(os.path.join(freetype_root, 'include', 'freetype2'))
     freetype_lib.append(os.path.join(freetype_root, 'lib'))
+
+tiff_root = GetOption('tiff')
+tiff_include = []
+tiff_lib = []
+if tiff_root:
+    tiff_include.append(os.path.join(tiff_root, 'include'))
+    tiff_lib.append(os.path.join(tiff_root, 'lib'))
+
 
 env = Environment()
 
