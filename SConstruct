@@ -46,6 +46,16 @@ AddOption(
     help='Path to root of halide library.'
 )
 
+AddOption(
+    '--seexpr',
+    dest='seexpr',
+    type='string',
+    nargs=1,
+    action='store',
+    metavar='DIR',
+    help='Path to root of seexpr library.'
+)
+
 mediaio_root = GetOption('mediaio')
 mediaio_include = ''
 mediaio_lib = ''
@@ -77,6 +87,13 @@ if halide_root:
     halide_lib.append(os.path.join(halide_root, 'lib'))
     halide_lib.append(os.path.join(halide_root, 'bin'))
 
+seexpr_root = GetOption('seexpr')
+seexpr_include = []
+seexpr_lib = []
+if seexpr_root:
+    seexpr_include = os.path.join(seexpr_root, 'include')
+    seexpr_lib.append(os.path.join(seexpr_root, 'lib'))
+
 env = Environment()
 
 env.Append(
@@ -86,6 +103,7 @@ env.Append(
         turingcodec_include,
         bento_include,
         halide_include,
+        seexpr_include,
     ],
     DPATH = [
         '#src',
@@ -101,6 +119,7 @@ env.Append(
         turingcodec_lib,
         bento_lib,
         halide_lib,
+        seexpr_lib,
     ],
 )
 

@@ -147,9 +147,8 @@ if conf.CheckLibWithHeader('Bento4', 'Ap4.h', 'c++'):
 else:
     print 'Did not find Bento4 library!'
 
-
 if conf.CheckLibWithHeader('Halide', 'Halide.h', 'c++'):
-    BentoTSPlugin = env.SharedLibrary(
+    GammaPlugin = env.SharedLibrary(
         'gamma',
         Glob( 'gamma/*.cpp' ),
         LIBS=[
@@ -160,7 +159,23 @@ if conf.CheckLibWithHeader('Halide', 'Halide.h', 'c++'):
         SHLIBSUFFIX = ".miop",
         SHLIBVERSION = "",
     )
-    env.Alias('install', env.InstallVersionedLib('plugin/gamma.miop.bundle/Contents/' + platform, BentoTSPlugin))
+    env.Alias('install', env.InstallVersionedLib('plugin/gamma.miop.bundle/Contents/' + platform, GammaPlugin))
+else:
+    print 'Did not find Bento4 library!'
+
+if conf.CheckLibWithHeader('SeExpr', 'SeExpression.h', 'c++'):
+    SeExprPlugin = env.SharedLibrary(
+        'seexpr',
+        Glob( 'seexpr/*.cpp' ),
+        LIBS=[
+            'mediaio-api',
+            'SeExpr',
+        ],
+        SHLIBPREFIX = "",
+        SHLIBSUFFIX = ".miop",
+        SHLIBVERSION = "",
+    )
+    env.Alias('install', env.InstallVersionedLib('plugin/seexpr.miop.bundle/Contents/' + platform, SeExprPlugin))
 else:
     print 'Did not find Bento4 library!'
 
