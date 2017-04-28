@@ -148,3 +148,9 @@ plugin('asdcplib', [
         'AS_DCP.h'
     ],
     'c++')
+
+plugin('ffmpeg', [
+        'avcodec'
+    ], [
+        'libavcodec/avcodec.h'
+    ])
