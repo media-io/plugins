@@ -10,13 +10,8 @@ public:
 	~Decoder();
 
 	MediaioStatus configure( const Metadata* parameters );
-
 	MediaioStatus decode(CodedData* unwrappedFrame, Frame* decodedFrame);
-
 	Metadata* getMetadatas();
-
-private:
-
 };
 
 #endif

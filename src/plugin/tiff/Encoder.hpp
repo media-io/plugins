@@ -12,7 +12,6 @@ public:
 	MediaioStatus configure(const Metadata* parameters);
 	MediaioStatus encode(Frame* decodedFrame, CodedData* unwrappedFrame);
 	Metadata* getMetadatas();
-private:
 };
 
 #endif
