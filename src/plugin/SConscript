@@ -80,6 +80,7 @@ platform = getPlatformName()
 
 plugin('filesystem')
 plugin('sequence')
+plugin('raw')
 plugin('statistics')
 plugin('comparator')
 plugin('psnr')
