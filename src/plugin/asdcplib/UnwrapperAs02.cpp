@@ -19,13 +19,14 @@ UnwrapperAs02::~UnwrapperAs02()
 
 MediaioStatus UnwrapperAs02::open(MediaioPluginReader* reader, void* readerHandle)
 {
-	// _reader = new MXFReader();
-	// Kumu::Result_t result = _reader->OpenRead(filename);
+	const char* filename = reader->get_filename(readerHandle);
+	_reader = new MXFReader();
+	Kumu::Result_t result = _reader->OpenRead(filename);
 
-	// if( ! ASDCP_SUCCESS(result) )
-	// {
-	// 	return kMediaioStatusFailed;
-	// }
+	if( ! ASDCP_SUCCESS(result) )
+	{
+		return kMediaioStatusFailed;
+	}
 
 	return kMediaioStatusOK;
 }
