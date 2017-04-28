@@ -87,16 +87,8 @@ MediaioStatus Filter::process( const Frame* inputFrame, Frame* outputFrame )
 	{
 		Component& component = inputFrame->components[index];
 
-		Buffer buffer(
-			Halide::UInt( 16 ),
-			component.width,
-			component.height,
-			1, // number of components
-			0,
-			(uint8_t*)component.data
-		);
-
-		Image<uint16_t> input( buffer );
+		Buffer<uint16_t> buffer((uint16_t*)component.data, component.size);
+		Image<uint16_t> input(buffer);
 
 		Expr value = input(_x, _y, _c);
 
@@ -108,7 +100,7 @@ MediaioStatus Filter::process( const Frame* inputFrame, Frame* outputFrame )
 		Func gamma;
 		gamma(_x, _y, _c) = value;
 
-		Image<uint16_t> output = gamma.realize(input.width(), input.height(), input.channels());
+		Image<uint16_t> output = gamma.realize(component.width, component.height, 1);
 
 
 		resize_component(&outputFrame->components[index], component.width * component.height * 2);

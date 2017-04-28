@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+using namespace Halide;
 
 Filter::Filter()
 {
@@ -87,17 +88,8 @@ MediaioStatus Filter::process(const Frame* inputFrame, Frame* outputFrame)
 	{
 		Component& component = inputFrame->components[index];
 
-		Halide::Buffer buffer(
-			Halide::UInt( 16 ),
-			component.width,
-			component.height,
-			1, // number of components
-			0,
-			(uint8_t*)component.data
-		);
-
-		Halide::Image<uint16_t> input( buffer );
-
+		Buffer<uint16_t> buffer((uint16_t*)component.data, component.size);
+		Image<uint16_t> input(buffer);
 		Halide::Expr value = input(_x, _y, _c);
 
 		value = Halide::cast<float>(value);
@@ -108,7 +100,7 @@ MediaioStatus Filter::process(const Frame* inputFrame, Frame* outputFrame)
 		Halide::Func mathOperator;
 		mathOperator(_x, _y, _c) = value;
 
-		Halide::Image<uint16_t> output = mathOperator.realize(input.width(), input.height(), input.channels());
+		Halide::Image<uint16_t> output = mathOperator.realize(component.width, component.height, 1);
 
 		resize_component(&outputFrame->components[index], component.width * component.height * 2);
 		outputFrame->components[index].width = component.width;
