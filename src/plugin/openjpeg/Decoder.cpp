@@ -3,6 +3,7 @@
 #include <openjpeg-2.1/openjpeg.h>
 #include <iostream>
 #include <cstdlib>
+#include <cstring>
 
 static void callback(const char *msg, void *client_data)
 {

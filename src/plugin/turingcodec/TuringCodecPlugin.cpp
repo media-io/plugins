@@ -67,26 +67,26 @@ Metadata* getEncoderMetadatas(void* handle)
 	return instance->getMetadatas();
 }
 
-static MediaioPluginInstance TuringCodecDecoderInstance =
+static MediaioPluginInstance DecoderInstance =
 {
 	createDecoderInstance,
 	deleteDecoderInstance
 };
 
-static MediaioPluginDecoder TuringCodecDecoder =
+static MediaioPluginDecoder Decoder =
 {
 	configureDecoder,
 	decode,
 	getDecoderMetadatas
 };
 
-static MediaioPluginInstance TuringCodecEncoderInstance =
+static MediaioPluginInstance EncoderInstance =
 {
 	createEncoderInstance,
 	deleteEncoderInstance
 };
 
-static MediaioPluginEncoder TuringCodecEncoder =
+static MediaioPluginEncoder Encoder =
 {
 	configureEncoder,
 	encode,

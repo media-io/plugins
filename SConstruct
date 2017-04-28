@@ -30,9 +30,9 @@ def add_and_parse_library_option(library_name, include=['include'], lib=['lib'])
 
 add_and_parse_library_option('mediaio')
 add_and_parse_library_option('turingcodec')
-add_and_parse_library_option('bento', [
-        'Source/C++/Core'
-        'Source/C++/Codecs'
+add_and_parse_library_option('Bento4', [
+        'Source/C++/Core',
+        'Source/C++/Codecs',
         'Source/C++/MetaData'
     ], [
         'Build/Targets/x86_64-unknown-linux/Release'
@@ -80,6 +80,8 @@ link_shared_library_message = '%sLinking Shared Library %s$TARGET%s' % \
 env = Environment()
 
 env['ENV']['TERM'] = os.environ['TERM']
+
+print external_include_paths
 
 env.Append(
     CXXCOMSTR = compile_source_message,

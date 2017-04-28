@@ -17,7 +17,12 @@ def getPlatformName():
     '''
     osname = os.name.lower()
     sysplatform = sys.platform.lower();
+
     if osname == "posix":
+        if (os.uname()[4][-3:] == '_64'):
+            bits = 64
+        else:
+            bits = 32
         if sysplatform.find("linux") >= 0:
             if bits == 64:
                 return 'Linux-x86-64'
@@ -29,10 +34,18 @@ def getPlatformName():
         elif sysplatform.find("darwin") >= 0:
             return 'MacOS'
         elif sysplatform.find("irix") >= 0:
+            if (os.uname()[4][-3:] == '_64'):
+                bits = 64
+            else:
+                bits = 32
             if bits == 64:
                 return 'IRIX64'
             return 'IRIX'
     elif osname == "nt":
+        if 'PROGRAMFILES(X86)' not in os.environ:
+            bits = 32
+        else:
+            bits = 64
         if sysplatform.startswith("win"):
             return 'Win' + str(bits)
         elif sysplatform.find("cygwin") >= 0:
@@ -44,7 +57,7 @@ def plugin(bundle, libraries = [], headers = [], code_style = 'c'):
 
     if(len(libraries)):
         if(not conf.CheckLibWithHeader(libraries, headers, code_style)):
-            print 'Missing depedencies for target ' + bundle
+            # print 'Missing depedencies for target ' + bundle
             return
 
     bundle_target = env.SharedLibrary(
@@ -84,13 +97,6 @@ plugin('turingcodec', [
     ], [
         'turing.h'
     ])
-
-plugin('bento_ts', [
-        'Bento4'
-    ], [
-        'Ap4.h'
-    ],
-    'c++')
 
 plugin('bento_ts', [
         'Bento4'
