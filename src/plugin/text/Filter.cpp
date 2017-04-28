@@ -163,8 +163,8 @@ void plot(Frame* outputFrame, int x, int y, int red, int green, int blue)
 	blue = std::max(blue, 0);
 
 	Component& component = outputFrame->components[0];
-	size_t height        = component.height;
-	size_t width         = component.width;
+	int height           = component.height;
+	int width            = component.width;
 	
 	if(y < 0 || y >= height){
 		return;
