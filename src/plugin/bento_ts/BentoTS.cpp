@@ -1,9 +1,6 @@
 
-#include <mediaio/api/instance/instance.h>
+#include <wrapper/Plugin.hpp>
 #include "Wrapper.hpp"
-
-#include <cstring>
-#include <iostream>
 
 MediaioStatus createWrapperInstance(void** handle)
 {
@@ -37,13 +34,13 @@ MediaioStatus wrapperWrapNextFrame(void* handle, const int streamIndex, CodedDat
 	return instance->wrapNextFrame(streamIndex, unwrappedFrame);
 }
 
-static MediaioPluginInstance BentoTSWrapperInstance =
+static MediaioPluginInstance WrapperInstance =
 {
 	createWrapperInstance,
 	deleteWrapperInstance
 };
 
-static MediaioPluginWrapper BentoTSWrapper =
+static MediaioPluginWrapper Wrapper =
 {
 	wrapperSetWriter,
 	wrapperConfigure,
@@ -51,48 +48,25 @@ static MediaioPluginWrapper BentoTSWrapper =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The main function
+// Plugin definition
 static void* pluginActionWrapper(const char *action)
 {
-	if(!strcmp(action, kMediaioGetWrapperPlugin))
+	switch(get_action(action))
 	{
-		return &BentoTSWrapper;
+		case PluginActionInstance:  { return &WrapperInstance; }
+		case PluginActionWrapper: { return &Wrapper; }
+		default: return nullptr;
 	}
-	if(!strcmp(action, kMediaioGetInstancePlugin))
-	{
-		return &BentoTSWrapperInstance;
-	}
-	return nullptr;
 }
 
-extern "C"
-{
-
-////////////////////////////////////////////////////////////////////////////////
-// the plugin struct
-
-static MediaioPlugin BentoTSWrapperPlugin = 
-{
-	kMediaioWrapperPluginApi,
-	1,
+Plugin wrapperPlugin = Plugin(
+	PluginApiWrapper,
 	"fr.co.mediaio:bento_ts",
 	"Mpeg2 TS muxer",
 	"Mux transport streams using Bento library",
 	1,
 	0,
 	pluginActionWrapper
-};
+);
 
-MediaioPlugin* mediaio_get_plugin(int nth)
-{
-	if(nth == 0)
-		return &BentoTSWrapperPlugin;
-	return 0;
-}
- 
-int mediaio_get_number_of_plugins(void)
-{
-	return 1;
-}
-
-}
+std::vector<Plugin> plugins = {wrapperPlugin};

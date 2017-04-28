@@ -1,9 +1,7 @@
 
-#include <mediaio/api/instance/instance.h>
-#include "Analyser.hpp"
+#include <wrapper/Plugin.hpp>
 
-#include <cstring>
-#include <iostream>
+#include "Analyser.hpp"
 
 MediaioStatus createInstance(void** handle)
 {
@@ -37,49 +35,25 @@ static MediaioPluginAnalyser Analyser =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The main function
-static void* pluginActionAnalyser(const char *action)
+// Plugin definition
+static void* pluginAction(const char *action)
 {
-	if(!strcmp(action, kMediaioGetAnalyserPlugin))
+	switch(get_action(action))
 	{
-		return &Analyser;
+		case PluginActionInstance: { return &AnalyserInstance; }
+		case PluginActionAnalyser: { return &Analyser; }
+		default: return nullptr;
 	}
-	if(!strcmp(action, kMediaioGetInstancePlugin))
-	{
-		return &AnalyserInstance;
-	}
-	return nullptr;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// The main function
-extern "C"
-{
-
-////////////////////////////////////////////////////////////////////////////////
-// the plugin struct 
-static MediaioPlugin PsnrAnalyser = 
-{
-	kMediaioAnalyserPluginApi,
-	1,
+Plugin plugin = Plugin(
+	PluginApiAnalyser,
 	"fr.co.mediaio:psnranalyser",
 	"Psnr Analyser",
 	"process PSNR measurement between 2 images",
 	1,
 	0,
-	pluginActionAnalyser
-};
+	pluginAction
+);
 
-MediaioPlugin* mediaio_get_plugin(int nth)
-{
-	if(nth == 0)
-		return &PsnrAnalyser;
-	return 0;
-}
-
-int mediaio_get_number_of_plugins(void)
-{
-	return 1;
-}
-
-}
+std::vector<Plugin> plugins = {plugin};

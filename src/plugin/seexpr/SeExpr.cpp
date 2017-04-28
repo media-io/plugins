@@ -1,9 +1,7 @@
 
+#include <wrapper/Plugin.hpp>
+
 #include "Generator.hpp"
-
-#include <mediaio/api/instance/instance.h>
-
-#include <vector>
 
 MediaioStatus createInstance(void** handle)
 {
@@ -45,47 +43,25 @@ static MediaioPluginGenerator Generator =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The main function
-static void* pluginActionGenerator( const char *action )
+// Plugin definition
+static void* pluginActionGenerator(const char *action)
 {
-	if( ! strcmp( action, kMediaioGetInstancePlugin ) )
+	switch(get_action(action))
 	{
-		return &GeneratorInstance;
+		case PluginActionInstance:  { return &GeneratorInstance; }
+		case PluginActionGenerator: { return &Generator; }
+		default: return nullptr;
 	}
-	if( ! strcmp( action, kMediaioGetGeneratorPlugin ) )
-	{
-		return &Generator;
-	}
-	return nullptr;
 }
 
-extern "C"
-{
-
-////////////////////////////////////////////////////////////////////////////////
-// the plugin struct 
-static MediaioPlugin SeExpr = 
-{
-	kMediaioGeneratorPluginApi,
-	1,
+Plugin plugin = Plugin(
+	PluginApiGenerator,
 	"fr.co.mediaio:seexpr",
 	"SeExpr",
 	"Generator based on SeExpr library",
 	1,
 	0,
 	pluginActionGenerator
-};
+);
 
-MediaioPlugin* mediaio_get_plugin(int nth)
-{
-	if(nth == 0)
-		return &SeExpr;
-	return 0;
-}
- 
-int mediaio_get_number_of_plugins(void)
-{
-	return 1;
-}
-
-}
+std::vector<Plugin> plugins = {plugin};

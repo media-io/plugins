@@ -1,7 +1,7 @@
 
-#include "Filter.hpp"
+#include <wrapper/Plugin.hpp>
 
-#include <mediaio/api/instance/instance.h>
+#include "Filter.hpp"
 
 MediaioStatus createInstance(void** handle)
 {
@@ -42,47 +42,25 @@ static MediaioPluginFilter Filter =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The main function
-static void* pluginActionFilter( const char *action )
+// Plugin definition
+static void* pluginAction(const char *action)
 {
-	if( ! strcmp( action, kMediaioGetInstancePlugin ) )
+	switch(get_action(action))
 	{
-		return &FilterInstance;
+		case PluginActionInstance: { return &FilterInstance; }
+		case PluginActionFilter:   { return &Filter; }
+		default: return nullptr;
 	}
-	if( ! strcmp( action, kMediaioGetFilterPlugin ) )
-	{
-		return &Filter;
-	}
-	return nullptr;
 }
 
-extern "C"
-{
-
-////////////////////////////////////////////////////////////////////////////////
-// the plugin struct 
-static MediaioPlugin Gamma = 
-{
-	kMediaioFilterPluginApi,
-	1,
+Plugin plugin = Plugin(
+	PluginApiFilter,
 	"fr.co.mediaio:gamma",
 	"Gamma",
 	"Apply a gamma on image",
 	1,
 	0,
-	pluginActionFilter
-};
+	pluginAction
+);
 
-MediaioPlugin* mediaio_get_plugin(int nth)
-{
-	if(nth == 0)
-		return &Gamma;
-	return 0;
-}
- 
-int mediaio_get_number_of_plugins(void)
-{
-	return 1;
-}
-
-}
+std::vector<Plugin> plugins = {plugin};

@@ -1,9 +1,8 @@
 
-#include <mediaio/api/instance/instance.h>
+#include <wrapper/Plugin.hpp>
+
 #include "Unwrapper.hpp"
 #include "Wrapper.hpp"
-
-#include <cstring>
 
 MediaioStatus unwrapperCreateInstance(void** handle)
 {
@@ -81,13 +80,13 @@ MediaioStatus wrapperWrapNextFrame(void* handle, const int streamIndex, CodedDat
 	return instance->wrapNextFrame(streamIndex, unwrappedFrame);
 }
 
-static MediaioPluginInstance SequenceUnwrapperInstance =
+static MediaioPluginInstance UnwrapperInstance =
 {
 	unwrapperCreateInstance,
 	unwrapperDeleteInstance
 };
 
-static MediaioPluginUnwrapper SequenceUnwrapper =
+static MediaioPluginUnwrapper Unwrapper =
 {
 	unwrapperOpen,
 	unwrapperConfigure,
@@ -96,13 +95,13 @@ static MediaioPluginUnwrapper SequenceUnwrapper =
 	unwrapperSeekAtTime
 };
 
-static MediaioPluginInstance SequenceWrapperInstance =
+static MediaioPluginInstance WrapperInstance =
 {
 	wrapperCreateInstance,
 	wrapperDeleteInstance
 };
 
-static MediaioPluginWrapper SequenceWrapper =
+static MediaioPluginWrapper Wrapper =
 {
 	wrapperOpen,
 	wrapperConfigure,
@@ -110,75 +109,46 @@ static MediaioPluginWrapper SequenceWrapper =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The main function
-static void* pluginActionUnwrapper( const char *action )
+// Plugin definition
+static void* pluginActionUnwrapper(const char *action)
 {
-	if( ! strcmp( action, kMediaioGetUnwrapperPlugin ) )
+	switch(get_action(action))
 	{
-		return &SequenceUnwrapper;
+		case PluginActionInstance:  { return &UnwrapperInstance; }
+		case PluginActionUnwrapper: { return &Unwrapper; }
+		default: return nullptr;
 	}
-	if( ! strcmp( action, kMediaioGetInstancePlugin ) )
-	{
-		return &SequenceUnwrapperInstance;
-	}
-	return nullptr;
 }
 
-static void* pluginActionWrapper( const char *action )
+static void* pluginActionWrapper(const char *action)
 {
-	if( ! strcmp( action, kMediaioGetWrapperPlugin ) )
+	switch(get_action(action))
 	{
-		return &SequenceWrapper;
+		case PluginActionInstance:  { return &WrapperInstance; }
+		case PluginActionWrapper: { return &Wrapper; }
+		default: return nullptr;
 	}
-	if( ! strcmp( action, kMediaioGetInstancePlugin ) )
-	{
-		return &SequenceWrapperInstance;
-	}
-	return nullptr;
 }
 
-extern "C"
-{
-
-////////////////////////////////////////////////////////////////////////////////
-// the plugin struct
-
-static MediaioPlugin SequenceUnwrapperPlugin = 
-{
-	kMediaioUnwrapperPluginApi,
-	1,
+Plugin unwrapperPlugin = Plugin(
+	PluginApiUnwrapper,
 	"fr.co.mediaio:sequenceunwrapper",
 	"Sequence Unwrapper",
 	"Read image sequences of any type",
 	1,
 	0,
 	pluginActionUnwrapper
-};
+);
 
-static MediaioPlugin SequenceWrapperPlugin = 
-{
-	kMediaioWrapperPluginApi,
-	1,
+
+Plugin wrapperPlugin = Plugin(
+	PluginApiWrapper,
 	"fr.co.mediaio:sequencewrapper",
 	"Sequence Wrapper",
 	"Write image sequences of any type",
 	1,
 	0,
 	pluginActionWrapper
-};
+);
 
-MediaioPlugin* mediaio_get_plugin(int nth)
-{
-	if(nth == 0)
-		return &SequenceUnwrapperPlugin;
-	if(nth == 1)
-		return &SequenceWrapperPlugin;
-	return 0;
-}
- 
-int mediaio_get_number_of_plugins(void)
-{
-	return 2;
-}
-
-}
+std::vector<Plugin> plugins = {wrapperPlugin, unwrapperPlugin};

@@ -1,8 +1,7 @@
 
-#include <mediaio/api/instance/instance.h>
-#include "Decoder.hpp"
+#include <wrapper/Plugin.hpp>
 
-#include <cstring>
+#include "Decoder.hpp"
 
 MediaioStatus createInstance(void** handle)
 {
@@ -36,13 +35,13 @@ Metadata* getMetadatas(void* handle)
 	return instance->getMetadatas();
 }
 
-static MediaioPluginInstance OpenJpegDecoderInstance =
+static MediaioPluginInstance DecoderInstance =
 {
 	createInstance,
 	deleteInstance
 };
 
-static MediaioPluginDecoder OpenJpegDecoder =
+static MediaioPluginDecoder Decoder =
 {
 	configure,
 	decode,
@@ -50,48 +49,25 @@ static MediaioPluginDecoder OpenJpegDecoder =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The main function
+// Plugin definition
 static void* pluginActionDecoder(const char *action)
 {
-	if(!strcmp(action, kMediaioGetDecoderPlugin))
+	switch(get_action(action))
 	{
-		return &OpenJpegDecoder;
+		case PluginActionInstance: { return &DecoderInstance; }
+		case PluginActionDecoder:  { return &Decoder; }
+		default: return nullptr;
 	}
-	if(!strcmp(action, kMediaioGetInstancePlugin))
-	{
-		return &OpenJpegDecoderInstance;
-	}
-	return nullptr;
 }
 
-extern "C"
-{
-
-////////////////////////////////////////////////////////////////////////////////
-// the plugin struct
-
-static MediaioPlugin OpenJpegDecoderPlugin = 
-{
-	kMediaioDecoderPluginApi,
-	1,
+Plugin decoderPlugin = Plugin(
+	PluginApiDecoder,
 	"fr.co.mediaio:openjpegdecoder",
 	"OpenJpeg Decoder",
 	"Decoder Jpeg2000 using OpenJpeg library",
 	1,
 	0,
 	pluginActionDecoder
-};
+);
 
-MediaioPlugin* mediaio_get_plugin(int nth)
-{
-	if(nth == 0)
-		return &OpenJpegDecoderPlugin;
-	return 0;
-}
- 
-int mediaio_get_number_of_plugins(void)
-{
-	return 1;
-}
-
-}
+std::vector<Plugin> plugins = {decoderPlugin};

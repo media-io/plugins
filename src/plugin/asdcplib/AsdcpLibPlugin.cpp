@@ -1,10 +1,8 @@
 
-#include <mediaio/api/instance/instance.h>
+#include <wrapper/Plugin.hpp>
+
 #include "UnwrapperAsdcp.hpp"
 #include "UnwrapperAs02.hpp"
-
-#include <cstring>
-#include <iostream>
 
 MediaioStatus asdcpCreateInstance(void** handle)
 {
@@ -94,13 +92,13 @@ MediaioStatus as02SeekAtTime(void* handle, const double time)
 	return instance->seekAtFrame(time);
 }
 
-static MediaioPluginInstance AsDcpLibUnwrapperInstance =
+static MediaioPluginInstance AsdcpUnwrapperInstance =
 {
 	asdcpCreateInstance,
 	asdcpDeleteInstance
 };
 
-static MediaioPluginUnwrapper AsDcpLibUnwrapper =
+static MediaioPluginUnwrapper AsdcpUnwrapper =
 {
 	asdcpOpen,
 	asdcpConfigure,
@@ -109,13 +107,13 @@ static MediaioPluginUnwrapper AsDcpLibUnwrapper =
 	asdcpSeekAtTime
 };
 
-static MediaioPluginInstance As02LibUnwrapperInstance =
+static MediaioPluginInstance As02UnwrapperInstance =
 {
 	as02CreateInstance,
 	as02DeleteInstance
 };
 
-static MediaioPluginUnwrapper As02LibUnwrapper =
+static MediaioPluginUnwrapper As02Unwrapper =
 {
 	as02Open,
 	as02Configure,
@@ -125,74 +123,46 @@ static MediaioPluginUnwrapper As02LibUnwrapper =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The main function
-static void* pluginAsdcpAction(const char *action)
+// Plugin definition
+static void* pluginActionAsdcp(const char *action)
 {
-	if(!strcmp(action, kMediaioGetUnwrapperPlugin))
+	switch(get_action(action))
 	{
-		return &AsDcpLibUnwrapper;
+		case PluginActionInstance:  { return &AsdcpUnwrapperInstance; }
+		case PluginActionUnwrapper: { return &AsdcpUnwrapper; }
+		default: return nullptr;
 	}
-	if(!strcmp(action, kMediaioGetInstancePlugin))
-	{
-		return &AsDcpLibUnwrapperInstance;
-	}
-	return nullptr;
 }
 
-static void* pluginAs02Action(const char *action)
+static void* pluginActionAs02(const char *action)
 {
-	if(!strcmp(action, kMediaioGetUnwrapperPlugin))
+	switch(get_action(action))
 	{
-		return &As02LibUnwrapper;
+		case PluginActionInstance:  { return &As02UnwrapperInstance; }
+		case PluginActionUnwrapper: { return &As02Unwrapper; }
+		default: return nullptr;
 	}
-	if(!strcmp(action, kMediaioGetInstancePlugin))
-	{
-		return &As02LibUnwrapperInstance;
-	}
-	return nullptr;
 }
 
-extern "C"
-{
-
-////////////////////////////////////////////////////////////////////////////////
-// the plugin struct 
-static MediaioPlugin AsDcpLibPlugin = 
-{
-	kMediaioUnwrapperPluginApi,
-	1,
+Plugin asdcpPlugin = Plugin(
+	PluginApiUnwrapper,
 	"fr.co.mediaio:asdcplibunwrapper",
 	"AsDcpLib Unwrapper",
 	"Unwrapper for DCP essences",
 	1,
 	0,
-	pluginAsdcpAction
-};
+	pluginActionGenerator
+);
 
-static MediaioPlugin As02LibPlugin = 
-{
-	kMediaioUnwrapperPluginApi,
-	1,
+
+Plugin as02Plugin = Plugin(
+	PluginApiUnwrapper,
 	"fr.co.mediaio:as02libunwrapper",
 	"As02Lib Unwrapper",
 	"Unwrapper for AS-02 like essences",
 	1,
 	0,
-	pluginAs02Action
-};
+	pluginActionGenerator
+);
 
-MediaioPlugin* mediaio_get_plugin(int nth)
-{
-	if(nth == 0)
-		return &AsDcpLibPlugin;
-	if(nth == 1)
-		return &As02LibPlugin;
-	return 0;
-}
-
-int mediaio_get_number_of_plugins(void)
-{
-	return 2;
-}
-
-}
+std::vector<Plugin> plugins = {asdcpPlugin, as02Plugin};

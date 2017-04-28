@@ -1,9 +1,7 @@
 
-#include <mediaio/api/instance/instance.h>
-#include "Generator.hpp"
+#include <wrapper/Plugin.hpp>
 
-#include <cstring>
-#include <vector>
+#include "Generator.hpp"
 
 MediaioStatus createInstance(void** handle)
 {
@@ -45,47 +43,25 @@ static MediaioPluginGenerator Generator =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The main function
-static void* pluginActionGenerator( const char *action )
+// Plugin definition
+static void* pluginActionGenerator(const char *action)
 {
-	if( ! strcmp( action, kMediaioGetGeneratorPlugin ) )
+	switch(get_action(action))
 	{
-		return &Generator;
+		case PluginActionInstance:  { return &GeneratorInstance; }
+		case PluginActionGenerator: { return &Generator; }
+		default: return nullptr;
 	}
-	if( ! strcmp( action, kMediaioGetInstancePlugin ) )
-	{
-		return &GeneratorInstance;
-	}
-	return nullptr;
 }
 
-extern "C"
-{
-
-////////////////////////////////////////////////////////////////////////////////
-// the plugin struct 
-static MediaioPlugin Constant = 
-{
-	kMediaioGeneratorPluginApi,
-	1,
+Plugin plugin = Plugin(
+	PluginApiGenerator,
 	"fr.co.mediaio:constant",
 	"Constant",
 	"Generate constant colored image",
 	1,
 	0,
 	pluginActionGenerator
-};
+);
 
-MediaioPlugin* mediaio_get_plugin(int nth)
-{
-	if(nth == 0)
-		return &Constant;
-	return 0;
-}
- 
-int mediaio_get_number_of_plugins(void)
-{
-	return 1;
-}
-
-}
+std::vector<Plugin> plugins = {plugin};

@@ -1,11 +1,8 @@
 
-#include <mediaio/api/instance/instance.h>
+#include <wrapper/Plugin.hpp>
+
 #include "Reader.hpp"
 #include "Writer.hpp"
-
-#include <cstring>
-#include <iostream>
-#include <vector>
 
 MediaioStatus createInstanceReader(void** handle)
 {
@@ -176,74 +173,45 @@ static MediaioPluginWriter Writer =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The main function
+// Plugin definition
 static void* pluginActionReader(const char *action)
 {
-	if(!strcmp(action, kMediaioGetReaderPlugin))
+	switch(get_action(action))
 	{
-		return &Reader;
+		case PluginActionInstance: { return &ReaderInstance; }
+		case PluginActionReader:   { return &Reader; }
+		default: return nullptr;
 	}
-	if(!strcmp(action, kMediaioGetInstancePlugin))
-	{
-		return &ReaderInstance;
-	}
-	return nullptr;
 }
 
 static void* pluginActionWriter(const char *action)
 {
-	if(!strcmp(action, kMediaioGetWriterPlugin))
+	switch(get_action(action))
 	{
-		return &Writer;
+		case PluginActionInstance: { return &WriterInstance; }
+		case PluginActionWriter:   { return &Writer; }
+		default: return nullptr;
 	}
-	if(!strcmp(action, kMediaioGetInstancePlugin))
-	{
-		return &WriterInstance;
-	}
-	return nullptr;
 }
 
-extern "C"
-{
-
-////////////////////////////////////////////////////////////////////////////////
-// the plugin struct 
-static MediaioPlugin FileSystemReader = 
-{
-	kMediaioReaderPluginApi,
-	1,
+Plugin readerPlugin = Plugin(
+	PluginApiReader,
 	"fr.co.mediaio:filesystemreader",
 	"File System Reader",
 	"Read data from local filesystem",
 	1,
 	0,
 	pluginActionReader
-};
+);
 
-static MediaioPlugin FileSystemWriter = 
-{
-	kMediaioWriterPluginApi,
-	1,
+Plugin writerPlugin = Plugin(
+	PluginApiWriter,
 	"fr.co.mediaio:filesystemwriter",
 	"File System Writer",
 	"Write data to local filesystem",
 	1,
 	0,
 	pluginActionWriter
-};
+);
 
-MediaioPlugin* mediaio_get_plugin(int nth)
-{
-	if(nth == 0)
-		return &FileSystemReader;
-	if(nth == 1)
-		return &FileSystemWriter;
-	return 0;
-}
- 
-int mediaio_get_number_of_plugins(void)
-{
-	return 2;
-}
-
-}
+std::vector<Plugin> plugins = {readerPlugin, writerPlugin};

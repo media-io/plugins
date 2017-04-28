@@ -1,9 +1,8 @@
 
-#include <mediaio/api/instance/instance.h>
+#include <wrapper/Plugin.hpp>
+
 #include "Decoder.hpp"
 #include "Encoder.hpp"
-
-#include <cstring>
 
 MediaioStatus ffmpegDecoderCreateInstance(void** handle)
 {
@@ -33,95 +32,66 @@ MediaioStatus ffmpegEncoderDeleteInstance(void** handle)
 	return kMediaioStatusOK;
 }
 
-static MediaioPluginInstance FfmpegDecoderInstance =
+static MediaioPluginInstance DecoderInstance =
 {
 	ffmpegDecoderCreateInstance,
 	ffmpegDecoderDeleteInstance
 };
 
-static MediaioPluginDecoder FfmpegDecoder =
+static MediaioPluginDecoder Decoder =
 {
 };
 
-static MediaioPluginInstance FfmpegEncoderInstance =
+static MediaioPluginInstance EncoderInstance =
 {
 	ffmpegEncoderCreateInstance,
 	ffmpegEncoderDeleteInstance
 };
 
-static MediaioPluginEncoder FfmpegEncoder =
+static MediaioPluginEncoder Encoder =
 {
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The main function
-static void* pluginFfmpegDecoderAction(const char *action)
+// Plugin definition
+static void* pluginActionDecoder(const char *action)
 {
-	if(!strcmp(action, kMediaioGetDecoderPlugin))
+	switch(get_action(action))
 	{
-		return &FfmpegDecoder;
+		case PluginActionInstance: { return &DecoderInstance; }
+		case PluginActionDecoder:  { return &Decoder; }
+		default: return nullptr;
 	}
-	if(!strcmp(action, kMediaioGetInstancePlugin))
-	{
-		return &FfmpegDecoderInstance;
-	}
-	return nullptr;
 }
 
-static void* pluginFfmpegEncoderAction(const char *action)
+static void* pluginActionEncoder(const char *action)
 {
-	if(!strcmp(action, kMediaioGetEncoderPlugin))
+	switch(get_action(action))
 	{
-		return &FfmpegEncoder;
+		case PluginActionInstance: { return &EncoderInstance; }
+		case PluginActionEncoder:  { return &Encoder; }
+		default: return nullptr;
 	}
-	if(!strcmp(action, kMediaioGetInstancePlugin))
-	{
-		return &FfmpegEncoderInstance;
-	}
-	return nullptr;
 }
 
-extern "C"
-{
-
-////////////////////////////////////////////////////////////////////////////////
-// the plugin struct 
-static MediaioPlugin FfmpegDecoderPlugin = 
-{
-	kMediaioDecoderPluginApi,
-	1,
+Plugin decoderPlugin = Plugin(
+	PluginApiDecoder,
 	"fr.co.mediaio:ffmpegdecoder",
 	"FFmpeg decoder",
 	"Decoder based on FFmpeg library",
 	1,
 	0,
-	pluginFfmpegDecoderAction
-};
+	pluginActionDecoder
+);
 
-static MediaioPlugin FfmpegEncoderPlugin = 
-{
-	kMediaioEncoderPluginApi,
-	1,
+Plugin encoderPlugin = Plugin(
+	PluginApiEncoder,
 	"fr.co.mediaio:ffmpegencoder",
 	"FFmpeg encoder",
 	"Encoder based on FFmpeg library",
 	1,
 	0,
-	pluginFfmpegEncoderAction
-};
+	pluginActionEncoder
+);
 
-MediaioPlugin* mediaio_get_plugin(int nth)
-{
-	if(nth == 0)
-		return &FfmpegDecoderPlugin;
-	if(nth == 1)
-		return &FfmpegEncoderPlugin;
-	return 0;
-}
-
-int mediaio_get_number_of_plugins(void)
-{
-	return 2;
-}
-
-}
+std::vector<Plugin> plugins = {decoderPlugin, encoderPlugin};

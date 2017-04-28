@@ -1,10 +1,7 @@
 
+#include <wrapper/Plugin.hpp>
+
 #include "Filter.hpp"
-
-#include <mediaio/api/instance/instance.h>
-
-// #include <iostream>
-// #include <vector>
 
 MediaioStatus createInstance(void** handle)
 {
@@ -46,47 +43,25 @@ static MediaioPluginFilter Filter =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The main function
-static void* pluginActionFilter( const char *action )
+// Plugin definition
+static void* pluginAction(const char *action)
 {
-	if( ! strcmp( action, kMediaioGetFilterPlugin ) )
+	switch(get_action(action))
 	{
-		return &Filter;
+		case PluginActionInstance: { return &FilterInstance; }
+		case PluginActionFilter:   { return &Filter; }
+		default: return nullptr;
 	}
-	if( ! strcmp( action, kMediaioGetInstancePlugin ) )
-	{
-		return &FilterInstance;
-	}
-	return nullptr;
 }
 
-extern "C"
-{
-
-////////////////////////////////////////////////////////////////////////////////
-// the plugin struct 
-static MediaioPlugin Math = 
-{
-	kMediaioFilterPluginApi,
-	1,
+Plugin plugin = Plugin(
+	PluginApiFilter,
 	"fr.co.mediaio:math",
 	"Math",
 	"Apply math operator on a image (plus, minus, multiply, division)",
 	1,
 	0,
-	pluginActionFilter
-};
+	pluginAction
+);
 
-MediaioPlugin* mediaio_get_plugin(int nth)
-{
-	if(nth == 0)
-		return &Math;
-	return 0;
-}
- 
-int mediaio_get_number_of_plugins(void)
-{
-	return 1;
-}
-
-}
+std::vector<Plugin> plugins = {plugin};

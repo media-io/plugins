@@ -1,10 +1,7 @@
 
-#include <mediaio/api/instance/instance.h>
+#include <wrapper/Plugin.hpp>
 #include "Decoder.hpp"
 #include "Encoder.hpp"
-
-#include <cstring>
-#include <iostream>
 
 MediaioStatus createDecoderInstance(void** handle)
 {
@@ -97,75 +94,45 @@ static MediaioPluginEncoder TuringCodecEncoder =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The main function
+// Plugin definition
 static void* pluginActionDecoder(const char *action)
 {
-	if(!strcmp(action, kMediaioGetDecoderPlugin))
+	switch(get_action(action))
 	{
-		return &TuringCodecDecoder;
+		case PluginActionInstance: { return &DecoderInstance; }
+		case PluginActionDecoder:  { return &Decoder; }
+		default: return nullptr;
 	}
-	if(!strcmp(action, kMediaioGetInstancePlugin))
-	{
-		return &TuringCodecDecoderInstance;
-	}
-	return nullptr;
 }
 
 static void* pluginActionEncoder(const char *action)
 {
-	if(!strcmp(action, kMediaioGetEncoderPlugin))
+	switch(get_action(action))
 	{
-		return &TuringCodecEncoder;
+		case PluginActionInstance: { return &EncoderInstance; }
+		case PluginActionEncoder:  { return &Encoder; }
+		default: return nullptr;
 	}
-	if(!strcmp(action, kMediaioGetInstancePlugin))
-	{
-		return &TuringCodecEncoderInstance;
-	}
-	return nullptr;
 }
 
-extern "C"
-{
-
-////////////////////////////////////////////////////////////////////////////////
-// the plugin struct
-
-static MediaioPlugin TuringCodecDecoderPlugin = 
-{
-	kMediaioDecoderPluginApi,
-	1,
+Plugin decoderPlugin = Plugin(
+	PluginApiDecoder,
 	"fr.co.mediaio:turingdecoder",
 	"HEVC Decoder",
 	"Decode HEVC using Turing Codec library",
 	1,
 	0,
 	pluginActionDecoder
-};
+);
 
-static MediaioPlugin TuringCodecEncoderPlugin = 
-{
-	kMediaioEncoderPluginApi,
-	1,
+Plugin encoderPlugin = Plugin(
+	PluginApiEncoder,
 	"fr.co.mediaio:turingencoder",
 	"HEVC Encoder",
 	"Encode HEVC using Turing Codec library",
 	1,
 	0,
 	pluginActionEncoder
-};
+);
 
-MediaioPlugin* mediaio_get_plugin(int nth)
-{
-	if(nth == 0)
-		return &TuringCodecDecoderPlugin;
-	if(nth == 1)
-		return &TuringCodecEncoderPlugin;
-	return 0;
-}
- 
-int mediaio_get_number_of_plugins(void)
-{
-	return 2;
-}
-
-}
+std::vector<Plugin> plugins = {decoderPlugin, encoderPlugin};

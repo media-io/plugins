@@ -1,9 +1,7 @@
 
-#include <mediaio/api/instance/instance.h>
+#include <wrapper/Plugin.hpp>
 #include "Decoder.hpp"
 #include "Encoder.hpp"
-
-#include <iostream>
 
 MediaioStatus createDecoderInstance(void** handle)
 {
@@ -69,26 +67,26 @@ Metadata* getEncoderMetadatas(void* handle)
 	return instance->getMetadatas();
 }
 
-static MediaioPluginInstance TiffDecoderInstance =
+static MediaioPluginInstance DecoderInstance =
 {
 	createDecoderInstance,
 	deleteDecoderInstance
 };
 
-static MediaioPluginDecoder TiffDecoder =
+static MediaioPluginDecoder Decoder =
 {
 	configureDecoder,
 	decode,
 	getDecoderMetadatas
 };
 
-static MediaioPluginInstance TiffEncoderInstance =
+static MediaioPluginInstance EncoderInstance =
 {
 	createEncoderInstance,
 	deleteEncoderInstance
 };
 
-static MediaioPluginEncoder TiffEncoder =
+static MediaioPluginEncoder Encoder =
 {
 	configureEncoder,
 	encode,
@@ -96,75 +94,45 @@ static MediaioPluginEncoder TiffEncoder =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The main function
+// Plugin definition
 static void* pluginActionDecoder(const char *action)
 {
-	if(!strcmp(action, kMediaioGetDecoderPlugin))
+	switch(get_action(action))
 	{
-		return &TiffDecoder;
+		case PluginActionInstance: { return &DecoderInstance; }
+		case PluginActionDecoder:  { return &Decoder; }
+		default: return nullptr;
 	}
-	if(!strcmp(action, kMediaioGetInstancePlugin))
-	{
-		return &TiffDecoderInstance;
-	}
-	return nullptr;
 }
 
 static void* pluginActionEncoder(const char *action)
 {
-	if(!strcmp(action, kMediaioGetEncoderPlugin))
+	switch(get_action(action))
 	{
-		return &TiffEncoder;
+		case PluginActionInstance: { return &EncoderInstance; }
+		case PluginActionEncoder:  { return &Encoder; }
+		default: return nullptr;
 	}
-	if(!strcmp(action, kMediaioGetInstancePlugin))
-	{
-		return &TiffEncoderInstance;
-	}
-	return nullptr;
 }
 
-extern "C"
-{
-
-////////////////////////////////////////////////////////////////////////////////
-// the plugin struct
-
-static MediaioPlugin TiffDecoderPlugin = 
-{
-	kMediaioDecoderPluginApi,
-	1,
+Plugin decoderPlugin = Plugin(
+	PluginApiDecoder,
 	"fr.co.mediaio:tiffdecoder",
 	"Tiff Decoder",
 	"Decode TIFF image format",
 	1,
 	0,
 	pluginActionDecoder
-};
+);
 
-static MediaioPlugin TiffEncoderPlugin = 
-{
-	kMediaioEncoderPluginApi,
-	1,
+Plugin encoderPlugin = Plugin(
+	PluginApiEncoder,
 	"fr.co.mediaio:tiffencoder",
 	"Tiff Encoder",
 	"Encode TIFF image format",
 	1,
 	0,
 	pluginActionEncoder
-};
+);
 
-MediaioPlugin* mediaio_get_plugin(int nth)
-{
-	if(nth == 0)
-		return &TiffDecoderPlugin;
-	if(nth == 1)
-		return &TiffEncoderPlugin;
-	return 0;
-}
- 
-int mediaio_get_number_of_plugins(void)
-{
-	return 2;
-}
-
-}
+std::vector<Plugin> plugins = {decoderPlugin, encoderPlugin};
