@@ -5,6 +5,7 @@
 #include <tiffio.hxx>
 #include <fstream>
 #include <sstream>
+#include <cstring>
 
 Encoder::Encoder()
 {

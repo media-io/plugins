@@ -56,7 +56,7 @@ extern "C"
 
 MediaioPlugin* mediaio_get_plugin(int nth)
 {
-	if(nth > plugins.size())
+	if(nth > (int)plugins.size())
 	{
 		return 0;
 	}
