@@ -18,6 +18,24 @@ MediaioStatus ffmpegDecoderDeleteInstance(void** handle)
 	return kMediaioStatusOK;
 }
 
+MediaioStatus decoderConfigure(void* handle, const Metadata* parameters)
+{
+	Decoder* instance = (Decoder*) handle;
+	return instance->configure(parameters);
+}
+
+MediaioStatus decoderDecode(void* handle, CodedData* unwrappedFrame, Frame* decodedFrame)
+{
+	Decoder* instance = (Decoder*) handle;
+	return instance->decode(unwrappedFrame, decodedFrame);
+}
+
+Metadata* decoderGetMetadatas(void* handle)
+{
+	Decoder* instance = (Decoder*) handle;
+	return instance->getMetadatas();
+}
+
 MediaioStatus ffmpegEncoderCreateInstance(void** handle)
 {
 	Encoder* instance = new Encoder();
@@ -40,6 +58,9 @@ static MediaioPluginInstance DecoderInstance =
 
 static MediaioPluginDecoder Decoder =
 {
+	decoderConfigure,
+	decoderDecode,
+	decoderGetMetadatas
 };
 
 static MediaioPluginInstance EncoderInstance =

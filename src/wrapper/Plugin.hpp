@@ -65,7 +65,6 @@ MediaioPlugin* mediaio_get_plugin(int nth)
 
 int mediaio_get_number_of_plugins(void)
 {
-	printf("DUDE %lu\n", plugins.size());
 	return plugins.size();
 }
 

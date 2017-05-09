@@ -1,5 +1,5 @@
-#ifndef _MEDIAIO_PLUGIN_SEQUENCE_UNWRAPPER_HPP_
-#define _MEDIAIO_PLUGIN_SEQUENCE_UNWRAPPER_HPP_
+#ifndef _MEDIAIO_PLUGIN_MXF_UNWRAPPER_HPP_
+#define _MEDIAIO_PLUGIN_MXF_UNWRAPPER_HPP_
 
 #include <mediaio/api/unwrapper/unwrapper.h>
 
@@ -18,13 +18,11 @@ public:
 	MediaioStatus seekAtTime(const double time);
 
 private:
+	bool is_video_essence_key(const std::vector<unsigned char>& key);
+
 	MediaioPluginReader* _reader;
 	void*                _readerHandle;
-	std::string          _pattern;
-	std::string          _prefix;
-	std::string          _suffix;
-	size_t               _padding;
-	size_t               _currentFrame;
+	bool                 _init;
 };
 
 #endif

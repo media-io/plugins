@@ -71,6 +71,7 @@ plugin('statistics')
 plugin('comparator')
 plugin('psnr')
 plugin('constant')
+plugin('mxf')
 
 plugin('turingcodec', [
         'turing',
