@@ -5,7 +5,6 @@
 #include <iomanip>
 #include <sstream>
 #include <fstream>
-#include <vector>
 
 Unwrapper::Unwrapper()
 	: _reader       (NULL)
@@ -68,7 +67,7 @@ MediaioStatus Unwrapper::unwrapNextFrame(const int streamIndex, CodedData* coded
 			std::vector<unsigned char> long_length(length - 0x80, 0);
 			_reader->read(_readerHandle, (char*)&long_length[0], long_length.size());
 
-			for(int i = 0; i < long_length.size(); ++i)
+			for(size_t i = 0; i < long_length.size(); ++i)
 			{
 				int shift = long_length.size() - 1 - i;
 				value_length += (long_length.at(i) << 8 * shift);

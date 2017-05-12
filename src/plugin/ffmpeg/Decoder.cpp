@@ -88,7 +88,7 @@ MediaioStatus Decoder::decode(CodedData* codedFrame, Frame* decodedFrame)
 		int numcomps = 3;
 		create_components(decodedFrame, numcomps);
 
-		for(size_t componentIndex = 0; componentIndex < numcomps; ++componentIndex)
+		for(int componentIndex = 0; componentIndex < numcomps; ++componentIndex)
 		{
 			Component& comp = decodedFrame->components[componentIndex];
 

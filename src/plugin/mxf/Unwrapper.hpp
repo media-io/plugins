@@ -4,6 +4,7 @@
 #include <mediaio/api/unwrapper/unwrapper.h>
 
 #include <string>
+#include <vector>
 
 class Unwrapper
 {
