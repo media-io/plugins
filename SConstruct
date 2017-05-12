@@ -79,9 +79,8 @@ link_shared_library_message = '%sLinking Shared Library %s$TARGET%s' % \
 
 env = Environment()
 
-env['ENV']['TERM'] = os.environ['TERM']
-
-print external_include_paths
+if 'TERM' in os.environ:
+    env['ENV']['TERM'] = os.environ['TERM']
 
 env.Append(
     CXXCOMSTR = compile_source_message,
@@ -93,6 +92,7 @@ env.Append(
     LINKCOMSTR = link_program_message,
     CPPPATH = [
         '#src',
+        '/usr/inclue/freetype2',
         external_include_paths
     ],
     DPATH = [

@@ -72,7 +72,7 @@ def plugin(bundle, libraries = [], headers = [], code_style = 'c'):
         SHLIBVERSION = "",
     )
 
-    env.Alias('install', env.InstallVersionedLib('plugin/' + bundle + '.miop.bundle/Contents/' + platform, bundle_target))
+    env.Alias('install', env.InstallVersionedLib('$PREFIX/usr/Mediaio/Plugins/' + bundle + '.miop.bundle/Contents/' + platform, bundle_target))
 
 
 platform = getPlatformName()
