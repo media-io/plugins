@@ -40,8 +40,12 @@ static int decode(AVCodecContext *avctx, AVFrame *frame, int *got_frame, AVPacke
 		ret = avcodec_send_packet(avctx, pkt);
 		// In particular, we don't expect AVERROR(EAGAIN), because we read all
 		// decoded frames with avcodec_receive_frame() until done.
+
 		if (ret < 0 && ret != AVERROR_EOF)
+		{
+			std::cout << "ERROR: send packet " << av_err2str(ret) << std::endl;
 			return ret;
+		}
 	}
 
 	ret = avcodec_receive_frame(avctx, frame);
@@ -118,7 +122,7 @@ MediaioStatus Decoder::decode(CodedData* codedFrame, Frame* decodedFrame)
 		av_frame_free(&frame);
 		return kMediaioStatusOK;
 	} else {
-		printf("no frame decoded\n");
+		// printf("no frame decoded\n");
 	}
 	return kMediaioStatusFailed;
 }
