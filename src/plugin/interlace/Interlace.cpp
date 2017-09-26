@@ -55,7 +55,7 @@ static void* pluginAction(const char *action)
 Plugin plugin = Plugin(
 	PluginApiFilter,
 	"fr.co.mediaio:interlace",
-	"Interlace video stream",
+	"Interlace",
 	"Apply interlace filter",
 	1,
 	0,

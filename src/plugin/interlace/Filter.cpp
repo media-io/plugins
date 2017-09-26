@@ -28,7 +28,7 @@ MediaioStatus Filter::process(const Frame* inputFrame, Frame* outputFrame)
 
 		const int new_height = component_in.height / 2;
 
-		resize_component(&component_out, component_in.width * new_height * component_in.precision);
+		resize_component(&component_out, component_in.width * new_height * component_in.sampleSizeInByte);
 		component_out.width = component_in.width;
 		component_out.height = new_height;
 		component_out.precision = component_in.precision;
@@ -39,7 +39,7 @@ MediaioStatus Filter::process(const Frame* inputFrame, Frame* outputFrame)
 
 		char* ptr_src = (char*)component_in.data;
 		char* ptr_dst = (char*)component_out.data;
-		size_t line_size = component_in.width * component_in.precision;
+		size_t line_size = component_in.width * component_in.sampleSizeInByte;
 		for (int i = 0; i < new_height; ++i)
 		{
 			memcpy(ptr_dst, ptr_src, line_size);
