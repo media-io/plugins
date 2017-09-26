@@ -103,9 +103,9 @@ MediaioStatus Decoder::decode(CodedData* codedFrame, Frame* decodedFrame)
 				int h_shift = 1;
 				int v_shift = 1;
 				avcodec_get_chroma_sub_sample((enum AVPixelFormat) frame->format, &h_shift, &v_shift);
-				
-				height /= v_shift + 1;
-				width /= h_shift + 1;
+
+				height /= h_shift + 1;
+				width /= v_shift + 1;
 			}
 
 			resize_component(&comp, width * height * sizeof(unsigned char));
