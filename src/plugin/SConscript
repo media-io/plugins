@@ -74,7 +74,7 @@ def plugin(bundle, libraries = [], headers = [], code_style = 'c'):
         SHLIBVERSION = "",
     )
 
-    env.Alias('install', env.InstallVersionedLib('plugin/' + bundle + '.miop.bundle/Contents/' + platform, bundle_target))
+    env.Alias('install', env.InstallVersionedLib('$PREFIX/usr/Mediaio/Plugins/' + bundle + '.miop.bundle/Contents/' + platform, bundle_target))
 
 
 platform = getPlatformName()
@@ -87,6 +87,9 @@ plugin('statistics')
 plugin('comparator')
 plugin('psnr')
 plugin('constant')
+plugin('mxf')
+plugin('yadif')
+plugin('interlace')
 
 plugin('turingcodec', [
         'turing',
@@ -168,7 +171,21 @@ plugin('asdcplib', [
     'c++')
 
 plugin('ffmpeg', [
-        'avcodec'
+        'avcodec',
+        'avformat'
     ], [
-        'libavcodec/avcodec.h'
+        'libavformat/avformat.h',
+        'libavformat/avio.h',
+        'libavcodec/avcodec.h',
+        'libavutil/avutil.h',
+        'libavutil/pixdesc.h',
+    ])
+
+plugin('gpac', [
+        'gpac',
+    ], [
+        'gpac/media_tools.h',
+        'gpac/constants.h',
+        'gpac/base_coding.h',
+        'gpac/mpegts.h',
     ])

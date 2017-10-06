@@ -1,5 +1,6 @@
 
 #include "Decoder.hpp"
+#include <iostream>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -22,6 +23,13 @@ MediaioStatus Decoder::configure(const Metadata* parameters)
 	return kMediaioStatusOK;
 }
 
+std::string getDescriptionFromErrorCode(const int code)
+{
+    char err[AV_ERROR_MAX_STRING_SIZE];
+    av_strerror(code, err, sizeof(err));
+    return std::string(err);
+}
+
 static int decode(AVCodecContext *avctx, AVFrame *frame, int *got_frame, AVPacket *pkt)
 {
 	int ret;
@@ -32,8 +40,12 @@ static int decode(AVCodecContext *avctx, AVFrame *frame, int *got_frame, AVPacke
 		ret = avcodec_send_packet(avctx, pkt);
 		// In particular, we don't expect AVERROR(EAGAIN), because we read all
 		// decoded frames with avcodec_receive_frame() until done.
+
 		if (ret < 0 && ret != AVERROR_EOF)
+		{
+			std::cout << "ERROR: send packet " << av_err2str(ret) << std::endl;
 			return ret;
+		}
 	}
 
 	ret = avcodec_receive_frame(avctx, frame);
@@ -41,7 +53,6 @@ static int decode(AVCodecContext *avctx, AVFrame *frame, int *got_frame, AVPacke
 		return ret;
 	if (ret >= 0)
 		*got_frame = 1;
-
 	return 0;
 }
 
@@ -51,7 +62,16 @@ MediaioStatus Decoder::decode(CodedData* codedFrame, Frame* decodedFrame)
 	{
 		avcodec_register_all();
 		AVCodec* codec = avcodec_find_decoder(AV_CODEC_ID_MPEG2VIDEO);
+		if (!codec)
+		{
+			return kMediaioStatusFailed;
+		}
 		_context = avcodec_alloc_context3(codec);
+
+		if(avcodec_open2(_context, codec, NULL) < 0)
+		{
+			return kMediaioStatusFailed;
+		}
 	}
 
 	AVPacket packet;
@@ -62,33 +82,49 @@ MediaioStatus Decoder::decode(CodedData* codedFrame, Frame* decodedFrame)
 
 	int got_frame = 0;
 
-	// int decode(AVCodecContext *avctx, AVFrame *frame, int *got_frame, AVPacket *pkt)
-
 	if(::decode(_context, frame, &got_frame, &packet) < 0) {
-		printf("An error occurred during video decoding");
+		printf("An error occurred during video decoding\n");
 		return kMediaioStatusFailed;
 	}
 
 	if(got_frame == 1) {
 
-		// let f: AVPixelFormat = transmute((*frame).format);
-		// println!("frame size : {}x{}", (*frame).width, (*frame).height);
-		// println!("pict type  : {:?}", (*frame).pict_type);
-		// println!("sar        : {:?}", (*frame).sample_aspect_ratio);
-		// println!("format     : {:?}", f);
-		// println!("data       : {:?}", (*frame).data);
-		// println!("linesize   : {:?}", (*frame).linesize);
+		int numcomps = 3;
+		create_components(decodedFrame, numcomps);
 
-		// size_t data_size = frame->linesize[0] * frame->height;
+		for(int componentIndex = 0; componentIndex < numcomps; ++componentIndex)
+		{
+			Component& comp = decodedFrame->components[componentIndex];
 
-		// std::vector<unsigned char> slice = std::vector(frame->data[0], data_size);
+			int height = frame->height;
+			int width = frame->width;
 
+			if(componentIndex != 0){
+				int h_shift = 1;
+				int v_shift = 1;
+				avcodec_get_chroma_sub_sample((enum AVPixelFormat) frame->format, &h_shift, &v_shift);
+
+				height /= h_shift + 1;
+				width /= v_shift + 1;
+			}
+
+			resize_component(&comp, width * height * sizeof(unsigned char));
+			memcpy((void*)comp.data, frame->data[0], comp.size);
+
+			comp.width = width;
+			comp.height = height;
+			comp.precision = 8;
+			comp.sampleSizeInByte = 1;
+			comp.horizontalSubsampling = 1;
+			comp.verticalSubsampling = 1;
+			comp.signedData = false;
+		}
+		av_frame_free(&frame);
+		return kMediaioStatusOK;
 	} else {
-		printf("no frame decoded");
+		// printf("no frame decoded\n");
 	}
-
-	av_frame_free(&frame);
-	return kMediaioStatusOK;
+	return kMediaioStatusFailed;
 }
 
 Metadata* Decoder::getMetadatas()

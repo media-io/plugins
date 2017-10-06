@@ -74,7 +74,7 @@ uint64_t Reader::read(char* data, uint64_t size)
 MediaioStatus Reader::seek(int64_t offset)
 {
 	if(_file.is_open()){
-		_file.seekg(offset);
+		_file.seekg(offset, std::ios_base::cur);
 	}
 	return kMediaioStatusOK;
 }

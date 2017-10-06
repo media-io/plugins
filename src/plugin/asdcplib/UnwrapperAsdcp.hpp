@@ -18,13 +18,9 @@ public:
 	~UnwrapperAsdcp();
 
 	MediaioStatus open(MediaioPluginReader* reader, void* readerHandle);
-
 	MediaioStatus configure(const Metadata* parameters);
-
 	MediaioStatus unwrapNextFrame(const int streamIndex, CodedData* unwrappedFrame);
-
 	MediaioStatus seekAtFrame(const int frame);
-
 	MediaioStatus seekAtTime(const double time);
 
 private:

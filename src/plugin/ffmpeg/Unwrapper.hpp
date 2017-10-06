@@ -1,9 +1,13 @@
-#ifndef _MEDIAIO_PLUGIN_SEQUENCE_UNWRAPPER_HPP_
-#define _MEDIAIO_PLUGIN_SEQUENCE_UNWRAPPER_HPP_
+#ifndef _MEDIAIO_PLUGIN_FFMPEG_UNWRAPPER_HPP_
+#define _MEDIAIO_PLUGIN_FFMPEG_UNWRAPPER_HPP_
 
 #include <mediaio/api/unwrapper/unwrapper.h>
 
 #include <string>
+
+extern "C" {
+#include <libavformat/avformat.h>
+}
 
 class Unwrapper
 {
@@ -18,13 +22,16 @@ public:
 	MediaioStatus seekAtTime(const double time);
 
 private:
+
+	static int read_packet(void *opaque, uint8_t *buf, int buf_size);
+
+	AVFormatContext*     _avFormatContext;
+
+	// AVIOContext*         _avio_ctx;
 	MediaioPluginReader* _reader;
 	void*                _readerHandle;
-	std::string          _pattern;
-	std::string          _prefix;
-	std::string          _suffix;
-	size_t               _padding;
-	size_t               _currentFrame;
+
+	bool _init;
 };
 
 #endif
