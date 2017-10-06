@@ -49,7 +49,7 @@ add_and_parse_library_option('tiff')
 add_and_parse_library_option('openjpeg')
 add_and_parse_library_option('asdcplib')
 add_and_parse_library_option('ffmpeg')
-add_and_parse_library_option('gpac', ['include'], ['include'])
+add_and_parse_library_option('gpac')
 
 colors = {}
 colors['cyan']   = '\033[96m'
@@ -107,11 +107,10 @@ env.Append(
         '-Wall',
         '-fPIC',
         '-m64',
-        '-std=c++11',
-    ],
-    CFLAGS = [
-        '-D=GPAC_CONFIG_DARWIN',
-        '-D=CONFIG_DARWIN_GL',
+        # '-D=GPAC_CONFIG_DARWIN',
+        # '-D=CONFIG_DARWIN_GL',
+        '-D=GPAC_DISABLE_PLAYER',
+        '-D=GPAC_CONFIG_ANDROID',
         '-D=GPAC_64_BITS',
     ],
     CXXFLAGS = [
@@ -119,8 +118,10 @@ env.Append(
         '-fPIC',
         '-m64',
         '-std=c++11',
-        '-D=GPAC_CONFIG_DARWIN',
-        '-D=CONFIG_DARWIN_GL',
+        # '-D=GPAC_CONFIG_DARWIN',
+        # '-D=CONFIG_DARWIN_GL',
+        '-D=GPAC_DISABLE_PLAYER',
+        '-D=GPAC_CONFIG_ANDROID',
         '-D=GPAC_64_BITS',
     ],
     LINKFLAGS = [

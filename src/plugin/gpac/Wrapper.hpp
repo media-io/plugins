@@ -23,6 +23,9 @@ private:
 	MediaioStatus init();
 
 	MediaioPluginWriter* _writer;
+	GF_M2TS_Mux_Program* _program;
+	GF_M2TS_Mux_Stream*  _stream;
+	GF_ESInterface       _interface;
 	void*                _writerHandle;
 	GF_M2TS_Mux*         _muxer;
 	bool                 _init;

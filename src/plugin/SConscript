@@ -88,7 +88,7 @@ plugin('comparator')
 plugin('psnr')
 plugin('constant')
 plugin('mxf')
-plugin('yadif')
+# plugin('yadif')
 plugin('interlace')
 
 plugin('turingcodec', [
@@ -105,13 +105,13 @@ plugin('turingcodec', [
     ])
 
 
-plugin('nvidia', [
-        # 'dl',
-        'cuda',
-    ], [
-        'cuda.h'
-    ],
-    'c++')
+# plugin('nvidia', [
+#         # 'dl',
+#         'cuda',
+#     ], [
+#         'cuda.h'
+#     ],
+#     'c++')
 
 plugin('bento_ts', [
         'Bento4'
