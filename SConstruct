@@ -47,6 +47,7 @@ add_and_parse_library_option('tiff')
 add_and_parse_library_option('openjpeg')
 add_and_parse_library_option('asdcplib')
 add_and_parse_library_option('ffmpeg')
+add_and_parse_library_option('gpac', ['include'], ['include'])
 
 colors = {}
 colors['cyan']   = '\033[96m'
@@ -74,7 +75,7 @@ link_program_message = '%sLinking Program        %s$TARGET%s' % \
 link_library_message = '%sLinking Static Library %s$TARGET%s' % \
    (colors['blue'], colors['cyan'], colors['end'])
 
-link_shared_library_message = '%sLinking Shared Library %s$TARGET%s' % \
+link_shared_library_message = '%sLinking Shared Library %s$TARGET%s $SHLINKCOM' % \
    (colors['blue'], colors['cyan'], colors['end'])
 
 env = Environment()
@@ -98,10 +99,18 @@ env.Append(
     DPATH = [
         '#src',
     ],
+    CFLAGS = [
+        '-D=GPAC_CONFIG_DARWIN',
+        '-D=CONFIG_DARWIN_GL',
+        '-D=GPAC_64_BITS',
+    ],
     CXXFLAGS = [
         '-Wall',
         '-fPIC',
         '-std=c++11',
+        '-D=GPAC_CONFIG_DARWIN',
+        '-D=CONFIG_DARWIN_GL',
+        '-D=GPAC_64_BITS',
     ],
     LIBPATH = [
         '#src',
@@ -112,7 +121,7 @@ env.Append(
 conf = Configure(env)
 
 if not conf.CheckLibWithHeader('mediaio-api', 'mediaio/api/instance/instance.h', 'c'):
-    print 'Did not find mediaio-api, exiting!'
+    print('Did not find mediaio-api, exiting!')
     Exit(1)
 
 Export('env')

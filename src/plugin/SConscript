@@ -86,6 +86,7 @@ plugin('comparator')
 plugin('psnr')
 plugin('constant')
 plugin('mxf')
+plugin('yadif')
 plugin('interlace')
 
 plugin('turingcodec', [
@@ -167,4 +168,13 @@ plugin('ffmpeg', [
         'libavcodec/avcodec.h',
         'libavutil/avutil.h',
         'libavutil/pixdesc.h',
+    ])
+
+plugin('gpac', [
+        'gpac',
+    ], [
+        'gpac/media_tools.h',
+        'gpac/constants.h',
+        'gpac/base_coding.h',
+        'gpac/mpegts.h',
     ])

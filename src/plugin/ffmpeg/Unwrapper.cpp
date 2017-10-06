@@ -51,12 +51,12 @@ MediaioStatus Unwrapper::open(MediaioPluginReader* reader, void* readerHandle)
 		return kMediaioStatusFailed;
 	}
 
-	struct buffer_data bd = { 0 };
+	// struct buffer_data bd = { 0 };
 
 	// size_t buffer_size = 4096;
-	size_t avio_ctx_buffer_size = 4096;
+	// size_t avio_ctx_buffer_size = 4096;
 	// uint8_t *buffer = nullptr;
-	uint8_t* avio_ctx_buffer = nullptr;
+	// uint8_t* avio_ctx_buffer = nullptr;
 
 	// avio_ctx_buffer = (uint8_t*)av_malloc(avio_ctx_buffer_size);
 	// if (!avio_ctx_buffer) {
