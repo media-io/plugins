@@ -30,6 +30,8 @@ def add_and_parse_library_option(library_name, include=['include'], lib=['lib'])
 
 add_and_parse_library_option('mediaio')
 add_and_parse_library_option('turingcodec')
+add_and_parse_library_option('nvidia-encoder', ['include'], ['lib/nvidia-375'])
+add_and_parse_library_option('cuda')
 add_and_parse_library_option('Bento4', [
         'Source/C++/Core',
         'Source/C++/Codecs',
@@ -65,23 +67,27 @@ if not sys.stdout.isatty():
 compile_source_message = '%sCompiling              %s$SOURCE%s' % \
    (colors['blue'], colors['green'], colors['end'])
 
-compile_shared_source_message = '%sCompiling shared       %s$SOURCE%s' % \
+# compile_shared_source_message = '%sCompiling shared       %s$SOURCE%s' % \
+compile_shared_source_message = '%sCompiling shared       %s$SOURCE%s $SHCCCOM $SHCXXCOM' % \
    (colors['blue'], colors['green'], colors['end'])
 
 link_program_message = '%sLinking Program        %s$TARGET%s' % \
    (colors['blue'], colors['cyan'], colors['end'])
 
-link_library_message = '%sLinking Static Library %s$TARGET%s' % \
+# link_library_message = '%sLinking Static Library %s$TARGET%s' % \
+link_library_message = '%sLinking Static Library %s$TARGET%s: $LINKCOM' % \
    (colors['blue'], colors['cyan'], colors['end'])
 
-link_shared_library_message = '%sLinking Shared Library %s$TARGET%s' % \
+# link_shared_library_message = '%sLinking Shared Library %s$TARGET%s' % \
+link_shared_library_message = '%sLinking Shared Library %s$TARGET%s: $SHLINKCOM' % \
    (colors['blue'], colors['cyan'], colors['end'])
 
 env = Environment()
 
 env['ENV']['TERM'] = os.environ['TERM']
 
-print external_include_paths
+# print external_include_paths
+# print external_lib_paths
 
 env.Append(
     CXXCOMSTR = compile_source_message,
@@ -95,13 +101,23 @@ env.Append(
         '#src',
         external_include_paths
     ],
-    DPATH = [
-        '#src',
+    # DPATH = [
+    #     '#src',
+    # ],
+    CFLAGS = [
+        '-Wall',
+        '-fPIC',
+        '-m64',
+        '-std=c++11',
     ],
     CXXFLAGS = [
         '-Wall',
         '-fPIC',
+        '-m64',
         '-std=c++11',
+    ],
+    LINKFLAGS = [
+        '-m64',
     ],
     LIBPATH = [
         '#src',

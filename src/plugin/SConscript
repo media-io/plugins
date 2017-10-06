@@ -62,7 +62,9 @@ def plugin(bundle, libraries = [], headers = [], code_style = 'c'):
 
     bundle_target = env.SharedLibrary(
         bundle,
-        Glob(bundle + '/*.cpp'),
+        Glob(bundle + '/*.cpp')
+        + Glob(bundle + '/*/*.cpp')
+        + Glob(bundle + '/*/*/*.cpp'),
         LIBS = [
             'mediaio-api',
             libraries
@@ -98,6 +100,15 @@ plugin('turingcodec', [
     ], [
         'turing.h'
     ])
+
+
+plugin('nvidia', [
+        # 'dl',
+        'cuda',
+    ], [
+        'cuda.h'
+    ],
+    'c++')
 
 plugin('bento_ts', [
         'Bento4'
