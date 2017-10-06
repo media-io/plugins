@@ -25,9 +25,9 @@ MediaioStatus Decoder::configure(const Metadata* parameters)
 
 std::string getDescriptionFromErrorCode(const int code)
 {
-    char err[AV_ERROR_MAX_STRING_SIZE];
-    av_strerror(code, err, sizeof(err));
-    return std::string(err);
+	char err[AV_ERROR_MAX_STRING_SIZE];
+	av_strerror(code, err, sizeof(err));
+	return std::string(err);
 }
 
 static int decode(AVCodecContext *avctx, AVFrame *frame, int *got_frame, AVPacket *pkt)
@@ -43,7 +43,9 @@ static int decode(AVCodecContext *avctx, AVFrame *frame, int *got_frame, AVPacke
 
 		if (ret < 0 && ret != AVERROR_EOF)
 		{
-			std::cout << "ERROR: send packet " << av_err2str(ret) << std::endl;
+			char err[AV_ERROR_MAX_STRING_SIZE];
+			av_strerror(ret, err, sizeof(err));
+			std::cout << "ERROR: send packet " << err << std::endl;
 			return ret;
 		}
 	}

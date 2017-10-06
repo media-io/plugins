@@ -83,7 +83,9 @@ MediaioStatus Unwrapper::open(MediaioPluginReader* reader, void* readerHandle)
 	const char* filename = reader->get_filename(readerHandle);
 	int ret = avformat_open_input(&_avFormatContext, filename, NULL, NULL);
 	if (ret < 0) {
-		std::cerr << "Could not open input " << av_err2str(ret) << std::endl;
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror(ret, err, sizeof(err));
+		std::cerr << "Could not open input " << err << std::endl;
 		return kMediaioStatusFailed;
 	}
 
@@ -111,7 +113,9 @@ MediaioStatus Unwrapper::unwrapNextFrame(const int streamIndex, CodedData* coded
 	const int ret = av_read_frame(_avFormatContext, &packet);
 	if(ret < 0) // error or end of file
 	{
-		std::cout << "ERROR: " << av_err2str(ret) << std::endl;
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror(ret, err, sizeof(err));
+		std::cout << "ERROR: " << err << std::endl;
 		return kMediaioStatusFailed;
 	}
 
