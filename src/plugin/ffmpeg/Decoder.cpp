@@ -100,25 +100,25 @@ MediaioStatus Decoder::decode(CodedData* codedFrame, Frame* decodedFrame)
 
 			int height = frame->height;
 			int width = frame->width;
+			int h_shift = 1;
+			int v_shift = 1;
 
 			if(componentIndex != 0){
-				int h_shift = 1;
-				int v_shift = 1;
 				avcodec_get_chroma_sub_sample((enum AVPixelFormat) frame->format, &h_shift, &v_shift);
 
-				height /= h_shift + 1;
-				width /= v_shift + 1;
+				height /= (h_shift + 1);
+				width /= (v_shift + 1);
 			}
 
 			resize_component(&comp, width * height * sizeof(unsigned char));
-			memcpy((void*)comp.data, frame->data[0], comp.size);
+			memcpy((void*)comp.data, frame->data[componentIndex], comp.size);
 
 			comp.width = width;
 			comp.height = height;
 			comp.precision = 8;
 			comp.sampleSizeInByte = 1;
-			comp.horizontalSubsampling = 1;
-			comp.verticalSubsampling = 1;
+			comp.horizontalSubsampling = h_shift;
+			comp.verticalSubsampling = v_shift;
 			comp.signedData = false;
 		}
 		av_frame_free(&frame);
