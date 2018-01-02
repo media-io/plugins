@@ -20,7 +20,7 @@ MediaioStatus Encoder::configure(const Metadata* parameters)
 	return kMediaioStatusOK;
 }
 
-MediaioStatus Encoder::encode(Frame* frame, CodedData* codedFrame)
+MediaioStatus Encoder::encode(ImageFrame* frame, CodedData* codedFrame)
 {
 	std::ostringstream outputTiffStream;
 	TIFF* writer = TIFFStreamOpen("TiffWriter", &outputTiffStream);

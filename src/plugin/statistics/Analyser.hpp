@@ -11,11 +11,11 @@ public:
 	Analyser();
 	~Analyser();
 
-	Metadata* analyse( const Frame* decodedFrame, const int numberOfFrames);
+	Metadata* analyse(const ImageFrame* decodedFrame, const int numberOfFrames);
 
 protected:
 	void analyseFrame(
-		const Frame& frame,
+		const ImageFrame& frame,
 		std::vector<int>& mins,
 		std::vector<int>& maxs,
 		std::vector<double>& means

@@ -46,7 +46,7 @@ void opj_read_from_buffer(void* p_buffer, OPJ_SIZE_T p_nb_bytes, const char* cod
 	memcpy(p_buffer, codedFrame, p_nb_bytes);
 }
 
-MediaioStatus Decoder::decode(CodedData* unwrappedFrame, Frame* decodedFrame)
+MediaioStatus Decoder::decode(CodedData* unwrappedFrame, ImageFrame* decodedFrame)
 {
 	_codec = opj_create_decompress(OPJ_CODEC_J2K);
 	opj_set_info_handler(_codec, callback, 0);

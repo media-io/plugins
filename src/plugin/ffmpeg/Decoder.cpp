@@ -58,7 +58,7 @@ static int decode(AVCodecContext *avctx, AVFrame *frame, int *got_frame, AVPacke
 	return 0;
 }
 
-MediaioStatus Decoder::decode(CodedData* codedFrame, Frame* decodedFrame)
+MediaioStatus Decoder::decode(CodedData* codedFrame, ImageFrame* decodedFrame)
 {
 	if(!_context)
 	{
@@ -85,7 +85,7 @@ MediaioStatus Decoder::decode(CodedData* codedFrame, Frame* decodedFrame)
 	int got_frame = 0;
 
 	if(::decode(_context, frame, &got_frame, &packet) < 0) {
-		printf("An error occurred during video decoding\n");
+		std::cout << "An error occurred during video decoding" << std::endl;
 		return kMediaioStatusFailed;
 	}
 
@@ -104,7 +104,7 @@ MediaioStatus Decoder::decode(CodedData* codedFrame, Frame* decodedFrame)
 			int v_shift = 1;
 
 			if(componentIndex != 0){
-				avcodec_get_chroma_sub_sample((enum AVPixelFormat) frame->format, &h_shift, &v_shift);
+				av_pix_fmt_get_chroma_sub_sample((enum AVPixelFormat) frame->format, &h_shift, &v_shift);
 
 				height /= (h_shift + 1);
 				width /= (v_shift + 1);

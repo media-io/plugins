@@ -20,7 +20,7 @@ MediaioStatus Encoder::configure(const Metadata* parameters)
 	return kMediaioStatusOK;
 }
 
-bool Encoder::init(Frame* frame)
+bool Encoder::init(ImageFrame* frame)
 {
 	if(!frame || frame->numberOfComponents != 3) {
 		return false;
@@ -96,7 +96,7 @@ bool Encoder::init(Frame* frame)
 	return true;
 }
 
-MediaioStatus Encoder::encode(Frame* frame, CodedData* codedFrame)
+MediaioStatus Encoder::encode(ImageFrame* frame, CodedData* codedFrame)
 {
 	if(!_init)
 	{

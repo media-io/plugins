@@ -9,7 +9,7 @@ Analyser::Analyser()
 Analyser::~Analyser()
 {}
 
-Metadata* Analyser::analyse(const Frame* decodedFrame, const int numberOfFrames)
+Metadata* Analyser::analyse(const ImageFrame* decodedFrame, const int numberOfFrames)
 {
 	_results.clear();
 	_sums.clear();
@@ -89,8 +89,8 @@ Metadata* Analyser::analyse(const Frame* decodedFrame, const int numberOfFrames)
 }
 
 void Analyser::computeSumOfDiff(
-		const Frame& refFrame,
-		const Frame& frame,
+		const ImageFrame& refFrame,
+		const ImageFrame& frame,
 		std::vector< std::vector<double> >& sums,
 		std::vector< std::vector<double> >& mins,
 		std::vector< std::vector<double> >& maxs,

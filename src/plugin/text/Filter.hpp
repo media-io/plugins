@@ -12,13 +12,13 @@ public:
 	Filter();
 	~Filter();
 
-	MediaioStatus configure( const Metadata* parameters );
+	MediaioStatus configure(const Metadata* parameters);
 
-	MediaioStatus process( const Frame* inputFrame, Frame* outputFrame );
+	MediaioStatus process(const ImageFrame* inputFrame, ImageFrame* outputFrame);
 
 private:
 	void plot_text_utf8(
-		Frame* outputFrame,
+		ImageFrame* outputFrame,
 		std::string face_path,
 		int fontsize,
 		int x_start,

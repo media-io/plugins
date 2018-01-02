@@ -14,7 +14,7 @@ Analyser::~Analyser()
 
 }
 
-Metadata* Analyser::analyse(const Frame* decodedFrame, const int numberOfFrames)
+Metadata* Analyser::analyse(const ImageFrame* decodedFrame, const int numberOfFrames)
 {
 	_results.clear();
 
@@ -78,7 +78,7 @@ Metadata* Analyser::analyse(const Frame* decodedFrame, const int numberOfFrames)
 	return &_results[0];
 }
 
-void Analyser::analyseFrame( const Frame& frame, std::vector<int>& mins, std::vector<int>& maxs, std::vector<double>& means )
+void Analyser::analyseFrame(const ImageFrame& frame, std::vector<int>& mins, std::vector<int>& maxs, std::vector<double>& means)
 {
 	size_t components = frame.numberOfComponents;
 

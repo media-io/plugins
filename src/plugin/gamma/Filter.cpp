@@ -74,12 +74,12 @@ Filter::~Filter()
 
 }
 
-MediaioStatus Filter::configure( const Metadata* parameters )
+MediaioStatus Filter::configure(const Metadata* parameters)
 {
 	return kMediaioStatusOK;
 }
 
-MediaioStatus Filter::process( const Frame* inputFrame, Frame* outputFrame )
+MediaioStatus Filter::process(const ImageFrame* inputFrame, ImageFrame* outputFrame)
 {
 	create_components(outputFrame, inputFrame->numberOfComponents);
 
@@ -88,9 +88,8 @@ MediaioStatus Filter::process( const Frame* inputFrame, Frame* outputFrame )
 		Component& component = inputFrame->components[index];
 
 		Buffer<uint16_t> buffer((uint16_t*)component.data, component.size);
-		Image<uint16_t> input(buffer);
 
-		Expr value = input(_x, _y, _c);
+		Expr value = buffer(_x, _y, _c);
 
 		value = cast<float>(value);
 		value = pow( value / 65536.0f, 0.5f );
@@ -100,7 +99,7 @@ MediaioStatus Filter::process( const Frame* inputFrame, Frame* outputFrame )
 		Func gamma;
 		gamma(_x, _y, _c) = value;
 
-		Image<uint16_t> output = gamma.realize(component.width, component.height, 1);
+		Buffer<uint16_t> output = gamma.realize(component.width, component.height, 1);
 
 
 		resize_component(&outputFrame->components[index], component.width * component.height * 2);

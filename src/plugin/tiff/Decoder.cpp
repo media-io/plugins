@@ -16,12 +16,12 @@ Decoder::~Decoder()
 {
 }
 
-MediaioStatus Decoder::configure( const Metadata* parameters )
+MediaioStatus Decoder::configure(const Metadata* parameters)
 {
 	return kMediaioStatusOK;
 }
 
-MediaioStatus Decoder::decode(CodedData* unwrappedFrame, Frame* decodedFrame)
+MediaioStatus Decoder::decode(CodedData* unwrappedFrame, ImageFrame* decodedFrame)
 {
 	std::string content((char*)unwrappedFrame->data, unwrappedFrame->size);
 	std::istringstream inputTiffStream(content);

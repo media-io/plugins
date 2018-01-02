@@ -80,7 +80,7 @@ MediaioStatus Filter::configure(const Metadata* parameters)
 	return kMediaioStatusOK;
 }
 
-MediaioStatus Filter::process(const Frame* inputFrame, Frame* outputFrame)
+MediaioStatus Filter::process(const ImageFrame* inputFrame, ImageFrame* outputFrame)
 {
 	create_components(outputFrame, inputFrame->numberOfComponents);
 
@@ -89,18 +89,17 @@ MediaioStatus Filter::process(const Frame* inputFrame, Frame* outputFrame)
 		Component& component = inputFrame->components[index];
 
 		Buffer<uint16_t> buffer((uint16_t*)component.data, component.size);
-		Image<uint16_t> input(buffer);
-		Halide::Expr value = input(_x, _y, _c);
+		Expr value = buffer(_x, _y, _c);
 
 		value = Halide::cast<float>(value);
 		value = value * 4.0f;
 		value = Halide::min(value, 65535.0f);
 		value = Halide::cast<uint16_t>(value);
 		
-		Halide::Func mathOperator;
+		Func mathOperator;
 		mathOperator(_x, _y, _c) = value;
 
-		Halide::Image<uint16_t> output = mathOperator.realize(component.width, component.height, 1);
+		Buffer<uint16_t> output = mathOperator.realize(component.width, component.height, 1);
 
 		resize_component(&outputFrame->components[index], component.width * component.height * 2);
 		outputFrame->components[index].width = component.width;

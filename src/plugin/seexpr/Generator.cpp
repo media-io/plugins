@@ -47,7 +47,7 @@ double clamp(double x) {
 	return std::max(0., std::min(65535., x));
 }
 
-MediaioStatus Generator::generate(Frame* frame)
+MediaioStatus Generator::generate(ImageFrame* frame)
 {
 	// ImageSynthExpr expr("fbm([10*$u,10*$v,.5])");
 	ImageSynthExpr expr("\
@@ -71,7 +71,7 @@ MediaioStatus Generator::generate(Frame* frame)
 	// 	return kMediaioStatusFailed;
 	// }
 
-	init_frame(frame);
+	init_image_frame(frame);
 	create_components(frame, _components);
 
 	double one_over_width  = 1.0 / _width;

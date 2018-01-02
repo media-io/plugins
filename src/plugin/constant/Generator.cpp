@@ -41,9 +41,9 @@ MediaioStatus Generator::configure(const Metadata* parameters)
 	return kMediaioStatusOK;
 }
 
-MediaioStatus Generator::generate(Frame* frame)
+MediaioStatus Generator::generate(ImageFrame* frame)
 {
-	init_frame(frame);
+	init_image_frame(frame);
 	create_components(frame, _components);
 
 	for (size_t c = 0; c < _components; ++c)

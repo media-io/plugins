@@ -23,7 +23,7 @@ MediaioStatus configureDecoder(void* handle, const Metadata* parameters)
 	return instance->configure( parameters );
 }
 
-MediaioStatus decode(void* handle, CodedData* unwrappedFrame, Frame* decodedFrame)
+MediaioStatus decode(void* handle, CodedData* unwrappedFrame, ImageFrame* decodedFrame)
 {
 	Decoder* instance = (Decoder*) handle;
 	return instance->decode(unwrappedFrame, decodedFrame);

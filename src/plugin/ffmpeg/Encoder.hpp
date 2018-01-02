@@ -10,7 +10,7 @@ public:
 	~Encoder();
 
 	MediaioStatus configure(const Metadata* parameters);
-	MediaioStatus encode(Frame* decodedFrame, CodedData* unwrappedFrame);
+	MediaioStatus encode(ImageFrame* decodedFrame, CodedData* unwrappedFrame);
 	Metadata* getMetadatas();
 private:
 };

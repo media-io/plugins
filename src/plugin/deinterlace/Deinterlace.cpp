@@ -1,6 +1,5 @@
 
 #include <wrapper/Plugin.hpp>
-
 #include "Filter.hpp"
 
 MediaioStatus createInstance(void** handle)
@@ -55,9 +54,9 @@ static void* pluginAction(const char *action)
 
 Plugin plugin = Plugin(
 	PluginApiImageFilter,
-	"fr.co.mediaio:gamma",
-	"Gamma",
-	"Apply a gamma on image",
+	"fr.co.mediaio:deinterlace",
+	"De-Interlace",
+	"Apply de-interlace filter",
 	1,
 	0,
 	pluginAction

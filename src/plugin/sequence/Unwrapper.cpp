@@ -78,6 +78,16 @@ MediaioStatus Unwrapper::configure(const Metadata* parameters)
 	return kMediaioStatusOK;
 }
 
+MediaioStatus Unwrapper::getDescription(struct MediaioFileDescriptor* descriptor)
+{
+	return kMediaioStatusOK;
+}
+
+MediaioStatus Unwrapper::getStreamDescription(const int streamIndex, struct MediaioStreamDescriptor* descriptor)
+{
+	return kMediaioStatusOK;
+}
+
 MediaioStatus Unwrapper::unwrapNextFrame(const int streamIndex, CodedData* unwrappedFrame)
 {
 	std::ostringstream filenameAtFrame;

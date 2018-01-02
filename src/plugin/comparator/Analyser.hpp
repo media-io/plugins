@@ -11,12 +11,12 @@ public:
 	Analyser();
 	~Analyser();
 
-	Metadata* analyse( const Frame* decodedFrame, const int numberOfFrames);
+	Metadata* analyse( const ImageFrame* decodedFrame, const int numberOfFrames);
 
 protected:
 	void computeSumOfDiff(
-		const Frame& refFrame,
-		const Frame& frame,
+		const ImageFrame& refFrame,
+		const ImageFrame& frame,
 		std::vector< std::vector<double> >& sums,
 		std::vector< std::vector<double> >& mins,
 		std::vector< std::vector<double> >& maxs,

@@ -28,6 +28,18 @@ MediaioStatus unwrapperConfigure(void* handle, const Metadata* parameters)
 	return instance->configure(parameters);
 }
 
+MediaioStatus unwrapperGetFileDescription(void* handle, struct MediaioFileDescriptor* descriptor)
+{
+	Unwrapper* instance = (Unwrapper*) handle;
+	return instance->getDescription(descriptor);
+}
+
+MediaioStatus unwrapperGetStreamDescription(void* handle, const int streamIndex, struct MediaioStreamDescriptor* descriptor)
+{
+	Unwrapper* instance = (Unwrapper*) handle;
+	return instance->getStreamDescription(streamIndex, descriptor);
+}
+
 MediaioStatus unwrapperUnwrapNextFrame(void* handle, const int streamIndex, CodedData* unwrappedFrame)
 {
 	Unwrapper* instance = (Unwrapper*) handle;
@@ -56,6 +68,8 @@ static MediaioPluginUnwrapper Unwrapper =
 {
 	unwrapperOpen,
 	unwrapperConfigure,
+	unwrapperGetFileDescription,
+	unwrapperGetStreamDescription,
 	unwrapperUnwrapNextFrame,
 	unwrapperSeekAtFrame,
 	unwrapperSeekAtTime

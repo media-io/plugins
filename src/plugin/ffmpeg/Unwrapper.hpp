@@ -17,6 +17,8 @@ public:
 
 	MediaioStatus open(MediaioPluginReader* reader, void* readerHandle);
 	MediaioStatus configure(const Metadata* parameters);
+	MediaioStatus getDescription(struct MediaioFileDescriptor* descriptor);
+	MediaioStatus getStreamDescription(const int streamIndex, struct MediaioStreamDescriptor* descriptor);
 	MediaioStatus unwrapNextFrame(const int streamIndex, CodedData* unwrappedFrame);
 	MediaioStatus seekAtFrame(const int frame);
 	MediaioStatus seekAtTime(const double time);

@@ -17,7 +17,7 @@ MediaioStatus deleteInstance(void** handle)
 	return kMediaioStatusOK;
 }
 
-Metadata* analyse(void* handle, const Frame* decodedFrame, const int numberOfFrames)
+Metadata* analyse(void* handle, const ImageFrame* decodedFrame, const int numberOfFrames)
 {
 	Analyser* instance = (Analyser*) handle;
 	return instance->analyse(decodedFrame, numberOfFrames);

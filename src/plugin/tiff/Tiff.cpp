@@ -23,7 +23,7 @@ MediaioStatus configureDecoder(void* handle, const Metadata* parameters)
 	return instance->configure( parameters );
 }
 
-MediaioStatus decode(void* handle, CodedData* unwrappedFrame, Frame* decodedFrame)
+MediaioStatus decode(void* handle, CodedData* unwrappedFrame, ImageFrame* decodedFrame)
 {
 	Decoder* instance = (Decoder*) handle;
 	return instance->decode(unwrappedFrame, decodedFrame);
@@ -55,7 +55,7 @@ MediaioStatus configureEncoder(void* handle, const Metadata* parameters)
 	return instance->configure( parameters );
 }
 
-MediaioStatus encode(void* handle, Frame* decodedFrame, CodedData* unwrappedFrame)
+MediaioStatus encode(void* handle, ImageFrame* decodedFrame, CodedData* unwrappedFrame)
 {
 	Encoder* instance = (Encoder*) handle;
 	return instance->encode(decodedFrame, unwrappedFrame);
@@ -73,7 +73,7 @@ static MediaioPluginInstance DecoderInstance =
 	deleteDecoderInstance
 };
 
-static MediaioPluginDecoder Decoder =
+static MediaioPluginImageDecoder Decoder =
 {
 	configureDecoder,
 	decode,
@@ -86,7 +86,7 @@ static MediaioPluginInstance EncoderInstance =
 	deleteEncoderInstance
 };
 
-static MediaioPluginEncoder Encoder =
+static MediaioPluginImageEncoder Encoder =
 {
 	configureEncoder,
 	encode,
@@ -99,8 +99,8 @@ static void* pluginActionDecoder(const char *action)
 {
 	switch(get_action(action))
 	{
-		case PluginActionInstance: { return &DecoderInstance; }
-		case PluginActionDecoder:  { return &Decoder; }
+		case PluginActionInstance:     { return &DecoderInstance; }
+		case PluginActionImageDecoder: { return &Decoder; }
 		default: return nullptr;
 	}
 }
@@ -109,14 +109,14 @@ static void* pluginActionEncoder(const char *action)
 {
 	switch(get_action(action))
 	{
-		case PluginActionInstance: { return &EncoderInstance; }
-		case PluginActionEncoder:  { return &Encoder; }
+		case PluginActionInstance:     { return &EncoderInstance; }
+		case PluginActionImageEncoder: { return &Encoder; }
 		default: return nullptr;
 	}
 }
 
 Plugin decoderPlugin = Plugin(
-	PluginApiDecoder,
+	PluginApiImageDecoder,
 	"fr.co.mediaio:tiffdecoder",
 	"Tiff Decoder",
 	"Decode TIFF image format",
@@ -126,7 +126,7 @@ Plugin decoderPlugin = Plugin(
 );
 
 Plugin encoderPlugin = Plugin(
-	PluginApiEncoder,
+	PluginApiImageEncoder,
 	"fr.co.mediaio:tiffencoder",
 	"Tiff Encoder",
 	"Encode TIFF image format",

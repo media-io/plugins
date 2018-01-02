@@ -84,7 +84,7 @@ MediaioStatus Filter::configure(const Metadata* parameters)
 	return kMediaioStatusOK;
 }
 
-MediaioStatus Filter::process(const Frame* inputFrame, Frame* outputFrame)
+MediaioStatus Filter::process(const ImageFrame* inputFrame, ImageFrame* outputFrame)
 {
 	create_components(outputFrame, inputFrame->numberOfComponents);
 
@@ -152,7 +152,7 @@ std::string Filter::parse_string(const std::string source_text)
 	return text;
 }
 
-void plot(Frame* outputFrame, int x, int y, int red, int green, int blue)
+void plot(ImageFrame* outputFrame, int x, int y, int red, int green, int blue)
 {
 	red = std::min(red, 65535);
 	green = std::min(green, 65535);
@@ -202,7 +202,7 @@ void plot(Frame* outputFrame, int x, int y, int red, int green, int blue)
 	}
 };
 
-void plot(Frame* outputFrame, int x, int y, double red, double green, double blue)
+void plot(ImageFrame* outputFrame, int x, int y, double red, double green, double blue)
 {
 	plot(
 		outputFrame,
@@ -213,7 +213,7 @@ void plot(Frame* outputFrame, int x, int y, double red, double green, double blu
 	);
 };
 
-uint16_t get_pixel_value(const Frame* frame, size_t componentIndex, size_t x, size_t y)
+uint16_t get_pixel_value(const ImageFrame* frame, size_t componentIndex, size_t x, size_t y)
 {
 	Component& component = frame->components[componentIndex];
 	unsigned short* data = (unsigned short*)component.data;
@@ -223,7 +223,7 @@ uint16_t get_pixel_value(const Frame* frame, size_t componentIndex, size_t x, si
 }
 
 void render_bitmap(
-	Frame* outputFrame,
+	ImageFrame* outputFrame,
 	FT_Bitmap* bitmap,
 	int x,
 	int y,
@@ -254,7 +254,7 @@ void render_bitmap(
 }
 
 void Filter::plot_text_utf8(
-	Frame* outputFrame,
+	ImageFrame* outputFrame,
 	std::string face_path,
 	int fontsize,
 	int x_start,

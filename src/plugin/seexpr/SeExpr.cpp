@@ -23,7 +23,7 @@ MediaioStatus configure(void* handle, const Metadata* parameters)
 	return instance->configure(parameters);
 }
 
-MediaioStatus generate(void* handle, Frame* frame)
+MediaioStatus generate(void* handle, ImageFrame* frame)
 {
 	Generator* instance = (Generator*) handle;
 	instance->generate(frame);

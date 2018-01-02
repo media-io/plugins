@@ -79,17 +79,19 @@ def plugin(bundle, libraries = [], headers = [], code_style = 'c'):
 
 platform = getPlatformName()
 
-
-plugin('filesystem')
-plugin('sequence')
-plugin('raw')
-plugin('statistics')
 plugin('comparator')
-plugin('psnr')
 plugin('constant')
-plugin('mxf')
-# plugin('yadif')
+plugin('deinterlace')
+plugin('filesystem')
+plugin('http', ['curl'])
 plugin('interlace')
+plugin('mxf')
+plugin('pcm')
+plugin('psnr')
+plugin('raw')
+plugin('sequence')
+plugin('statistics')
+# plugin('yadif')
 
 plugin('turingcodec', [
         'turing',

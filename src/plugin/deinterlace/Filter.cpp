@@ -26,7 +26,7 @@ MediaioStatus Filter::process(const ImageFrame* inputFrame, ImageFrame* outputFr
 		const Component& component_in = inputFrame->components[index];
 		Component& component_out = outputFrame->components[index];
 
-		const int new_height = component_in.height / 2;
+		const int new_height = component_in.height * 2;
 
 		resize_component(&component_out, component_in.width * new_height * component_in.sampleSizeInByte);
 		component_out.width = component_in.width;
@@ -40,12 +40,23 @@ MediaioStatus Filter::process(const ImageFrame* inputFrame, ImageFrame* outputFr
 		char* ptr_src = (char*)component_in.data;
 		char* ptr_dst = (char*)component_out.data;
 		size_t line_size = component_in.width * component_in.sampleSizeInByte;
-		for (int i = 0; i < new_height; ++i)
-		{
-			memcpy(ptr_dst, ptr_src, line_size);
-			ptr_src += 2 * line_size;
-			ptr_dst += line_size;
-		}
+
+		// std::cout << component_in.width << "x" << component_in.height << " --> " << component_in.width << "x" << new_height << std::endl;
+		// if(index == 0){
+			for (int i = 0; i < component_in.height; ++i) {
+				memcpy(ptr_dst, ptr_src, line_size);
+				ptr_dst += line_size;
+				memcpy(ptr_dst, ptr_src, line_size);
+				ptr_src += line_size;
+				ptr_dst += line_size;
+			}
+		// } else {
+		// 	for (int i = 0; i < component_in.height; ++i) {
+		// 		memcpy(ptr_dst, ptr_src, line_size / 2);
+		// 		ptr_src += line_size;
+		// 		ptr_dst += line_size;
+		// 	}
+		// }
 	}
 
 	return kMediaioStatusOK;

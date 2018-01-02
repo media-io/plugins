@@ -10,7 +10,7 @@ public:
 	~Filter();
 
 	MediaioStatus configure(const Metadata* parameters);
-	MediaioStatus process(const Frame* inputFrame, Frame* outputFrame);
+	MediaioStatus process(const ImageFrame* inputFrame, ImageFrame* outputFrame);
 
 private:
 };

@@ -23,7 +23,7 @@ MediaioStatus configure(void* handle, const Metadata* parameters)
 	return instance->configure(parameters);
 }
 
-MediaioStatus decode(void* handle, CodedData* unwrappedFrame, ImageFrame* decodedFrame)
+MediaioStatus decode(void* handle, CodedData* unwrappedFrame, AudioFrame* decodedFrame)
 {
 	Decoder* instance = (Decoder*) handle;
 	return instance->decode(unwrappedFrame, decodedFrame);
@@ -41,7 +41,7 @@ static MediaioPluginInstance DecoderInstance =
 	deleteInstance
 };
 
-static MediaioPluginImageDecoder Decoder =
+static MediaioPluginAudioDecoder Decoder =
 {
 	configure,
 	decode,
@@ -55,16 +55,16 @@ static void* pluginActionDecoder(const char *action)
 	switch(get_action(action))
 	{
 		case PluginActionInstance:     { return &DecoderInstance; }
-		case PluginActionImageDecoder: { return &Decoder; }
+		case PluginActionAudioDecoder: { return &Decoder; }
 		default: return nullptr;
 	}
 }
 
 Plugin decoderPlugin = Plugin(
-	PluginApiImageDecoder,
-	"fr.co.mediaio:openjpegdecoder",
-	"OpenJpeg Decoder",
-	"Decoder Jpeg2000 using OpenJpeg library",
+	PluginApiAudioDecoder,
+	"fr.co.mediaio:pcmdecoder",
+	"PCM Decoder",
+	"Decode PCM audio",
 	1,
 	0,
 	pluginActionDecoder

@@ -13,7 +13,7 @@ public:
 
 	MediaioStatus configure(const Metadata* parameters);
 
-	MediaioStatus generate(Frame* frame);
+	MediaioStatus generate(ImageFrame* frame);
 
 private:
 	size_t _width;

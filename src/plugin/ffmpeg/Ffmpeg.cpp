@@ -31,6 +31,18 @@ MediaioStatus unwrapperConfigure(void* handle, const Metadata* parameters)
 	return instance->configure(parameters);
 }
 
+MediaioStatus unwrapperGetFileDescription(void* handle, struct MediaioFileDescriptor* descriptor)
+{
+	Unwrapper* instance = (Unwrapper*) handle;
+	return instance->getDescription(descriptor);
+}
+
+MediaioStatus unwrapperGetStreamDescription(void* handle, const int streamIndex, struct MediaioStreamDescriptor* descriptor)
+{
+	Unwrapper* instance = (Unwrapper*) handle;
+	return instance->getStreamDescription(streamIndex, descriptor);
+}
+
 MediaioStatus unwrapperUnwrapNextFrame(void* handle, const int streamIndex, CodedData* unwrappedFrame)
 {
 	Unwrapper* instance = (Unwrapper*) handle;
@@ -69,7 +81,7 @@ MediaioStatus decoderConfigure(void* handle, const Metadata* parameters)
 	return instance->configure(parameters);
 }
 
-MediaioStatus decoderDecode(void* handle, CodedData* unwrappedFrame, Frame* decodedFrame)
+MediaioStatus decoderDecode(void* handle, CodedData* unwrappedFrame, ImageFrame* decodedFrame)
 {
 	Decoder* instance = (Decoder*) handle;
 	return instance->decode(unwrappedFrame, decodedFrame);
@@ -105,6 +117,8 @@ static MediaioPluginUnwrapper Unwrapper =
 {
 	unwrapperOpen,
 	unwrapperConfigure,
+	unwrapperGetFileDescription,
+	unwrapperGetStreamDescription,
 	unwrapperUnwrapNextFrame,
 	unwrapperSeekAtFrame,
 	unwrapperSeekAtTime
@@ -116,7 +130,7 @@ static MediaioPluginInstance DecoderInstance =
 	ffmpegDecoderDeleteInstance
 };
 
-static MediaioPluginDecoder Decoder =
+static MediaioPluginImageDecoder Decoder =
 {
 	decoderConfigure,
 	decoderDecode,
@@ -129,7 +143,7 @@ static MediaioPluginInstance EncoderInstance =
 	ffmpegEncoderDeleteInstance
 };
 
-static MediaioPluginEncoder Encoder =
+static MediaioPluginImageEncoder Encoder =
 {
 };
 
@@ -149,8 +163,8 @@ static void* pluginActionDecoder(const char *action)
 {
 	switch(get_action(action))
 	{
-		case PluginActionInstance: { return &DecoderInstance; }
-		case PluginActionDecoder:  { return &Decoder; }
+		case PluginActionInstance:     { return &DecoderInstance; }
+		case PluginActionImageDecoder: { return &Decoder; }
 		default: return nullptr;
 	}
 }
@@ -159,8 +173,8 @@ static void* pluginActionEncoder(const char *action)
 {
 	switch(get_action(action))
 	{
-		case PluginActionInstance: { return &EncoderInstance; }
-		case PluginActionEncoder:  { return &Encoder; }
+		case PluginActionInstance:     { return &EncoderInstance; }
+		case PluginActionImageEncoder: { return &Encoder; }
 		default: return nullptr;
 	}
 }
@@ -176,7 +190,7 @@ Plugin unwrapperPlugin = Plugin(
 );
 
 Plugin decoderPlugin = Plugin(
-	PluginApiDecoder,
+	PluginApiImageDecoder,
 	"fr.co.mediaio:ffmpegdecoder",
 	"FFmpeg decoder",
 	"Decoder based on FFmpeg library",
@@ -186,7 +200,7 @@ Plugin decoderPlugin = Plugin(
 );
 
 Plugin encoderPlugin = Plugin(
-	PluginApiEncoder,
+	PluginApiImageEncoder,
 	"fr.co.mediaio:ffmpegencoder",
 	"FFmpeg encoder",
 	"Encoder based on FFmpeg library",

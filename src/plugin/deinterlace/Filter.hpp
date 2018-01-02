@@ -1,11 +1,7 @@
-#ifndef _MEDIAIO_PLUGIN_GAMMA_FILTER_HPP_
-#define _MEDIAIO_PLUGIN_GAMMA_FILTER_HPP_
+#ifndef _MEDIAIO_PLUGIN_DEINTERLACE_FILTER_HPP_
+#define _MEDIAIO_PLUGIN_DEINTERLACE_FILTER_HPP_
 
 #include <mediaio/api/filter/filter.h>
-
-#include <Halide.h>
-
-#include <vector>
 
 class Filter
 {
@@ -17,11 +13,6 @@ public:
 	MediaioStatus process(const ImageFrame* inputFrame, ImageFrame* outputFrame);
 
 private:
-	Halide::Target _target;
-	Halide::Var    _i;
-	Halide::Var    _x;
-	Halide::Var    _y;
-	Halide::Var    _c;
 };
 
 #endif
